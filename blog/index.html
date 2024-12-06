@@ -26,9 +26,38 @@
             border: 2px solid #ccc;
             border-radius: 5px;
         }
+        .tab-bar {
+            display: flex;
+            background-color: #222;
+            padding: 10px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+        .tab {
+            padding: 10px;
+            margin-right: 10px;
+            background-color: #444;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+        .tab img {
+            width: 20px;
+            height: 20px;
+            margin-right: 5px;
+        }
+        .close-tab {
+            margin-left: 5px;
+            cursor: pointer;
+            color: red;
+        }
         .icon-container {
             display: flex;
-            margin-top: 20px;
+            margin-top: 80px; /* Adjust for tab height */
         }
         .icon {
             margin: 0 10px;
@@ -58,9 +87,12 @@
 
     <h1>SandSmoke</h1>
     
-    <!-- プロキシモード切替ボタン -->
+    <div class="tab-bar" id="tabBar">
+        <div class="tab" onclick="switchTab(0)">タブ1 <span class="close-tab" onclick="closeTab(event, 0)">×</span></div>
+        <button onclick="addTab()">+</button>
+    </div>
+    
     <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
-    <!-- Rammerheadを起動ボタン -->
     <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
     
     <input type="text" id="searchInput" placeholder="SandSmoke" onkeypress="handleKeyPress(event)">
@@ -85,6 +117,8 @@
 
     <script>
         let isProxyMode = false; // プロキシモードの状態
+        let tabs = []; // タブを管理する配列
+        let currentTabIndex = 0; // 現在のタブのインデックス
 
         // プロキシモードの切り替え
         document.getElementById('proxyToggle').onclick = function() {
@@ -92,15 +126,63 @@
             this.textContent = `プロキシ: ${isProxyMode ? 'ON' : 'OFF'}`;
         };
 
+        function addTab(url = '') {
+            const tabIndex = tabs.length;
+            tabs.push(url);
+            renderTab(tabIndex, url);
+            switchTab(tabIndex);
+        }
+
+        function renderTab(index, url) {
+            const tabBar = document.getElementById('tabBar');
+            const tab = document.createElement('div');
+            tab.className = 'tab';
+            tab.innerHTML = `タブ${index + 1} <span class="close-tab" onclick="closeTab(event, ${index})">×</span>`;
+            tab.onclick = () => switchTab(index);
+            tabBar.insertBefore(tab, tabBar.lastChild);
+            const iframe = document.createElement('iframe');
+            iframe.src = url;
+            iframe.style.display = 'none';
+            iframe.style.width = '100%';
+            iframe.style.height = 'calc(100vh - 100px)'; // Adjust for header and tab bar
+            document.body.appendChild(iframe);
+        }
+
+        function switchTab(index) {
+            // すべてのタブを非表示にしてから、現在のタブを表示
+            const iframes = document.querySelectorAll('iframe');
+            iframes.forEach((iframe, i) => {
+                iframe.style.display = (i === index) ? 'block' : 'none';
+            });
+            currentTabIndex = index;
+        }
+
+        function closeTab(event, index) {
+            event.stopPropagation(); // クリックイベントが親要素に伝播しないようにする
+            const tabBar = document.getElementById('tabBar');
+            const tabsToKeep = tabs.filter((_, i) => i !== index);
+            tabs = tabsToKeep;
+
+            // タブを再レンダリング
+            tabBar.innerHTML = ''; // タブバーをクリア
+            tabs.forEach((_, i) => renderTab(i, tabs[i]));
+            tabBar.appendChild(tabBar.lastChild); // +ボタンを再追加
+            switchTab(Math.max(index - 1, 0)); // 現在のタブを切り替える
+        }
+
         // Rammerheadを起動ボタンの処理
         document.getElementById('rammerheadButton').onclick = function() {
             const link = prompt("URLを入力してください 読み込みには時間がかかります:");
             if (link) {
-                // プロキシを使用してURLをアンブロック  APIの権利はTacoGuy様にあります
+                addTab(link); // 新しいタブを追加
+                // プロキシを使用してURLをアンブロック
                 const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
                 fetch(proxy + link)
                     .then((response) => response.text())
-                    .then((text) => document.write(text))
+                    .then(() => {
+                        // タブ作成時にURLを保存する
+                        tabs[tabs.length - 1] = link;
+                    })
                     .catch((error) => alert("エラーが発生しました: " + error));
             }
         };
@@ -110,14 +192,11 @@
                 const query = document.getElementById('searchInput').value;
                 if (query) {
                     const host = window.location.origin;
-
+                    const url = `https://google.com/search?q=${encodeURIComponent(query)}`;
                     if (isProxyMode) {
-                        // プロキシモードがオンのときの処理
-                        const url = "https://google.com/search?q=" + encodeURIComponent(query);
-                        window.location.href = `${host}/proxy/${url}`;
+                        addTab(url);
                     } else {
-                        // 通常の処理
-                        window.location.href = `${host}/search?q=${encodeURIComponent(query)}`;
+                        addTab(`${host}/search?q=${encodeURIComponent(query)}`);
                     }
                 }
             }
@@ -131,6 +210,5 @@
         <button id="accept-btn" onclick="acceptCookies()">同意する</button>
         <button id="reject-btn" onclick="rejectCookies()">拒否する</button>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
