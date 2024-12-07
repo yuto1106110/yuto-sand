@@ -18,20 +18,6 @@
         h1 {
             font-size: 2.5rem;
         }
-        .tabs {
-            display: flex;
-            margin-top: 20px;
-        }
-        .tab {
-            padding: 10px 20px;
-            cursor: pointer;
-            background-color: #444;
-            margin-right: 5px;
-            border-radius: 5px;
-        }
-        .tab.active {
-            background-color: #666;
-        }
         input[type="text"] {
             width: 60%;
             padding: 10px;
@@ -71,39 +57,30 @@
 <body>
 
     <h1>SandSmoke</h1>
-
-    <div class="tabs">
-        <div class="tab active" onclick="switchTab('search')">検索</div>
-        <div class="tab" onclick="switchTab('proxy')">プロキシ</div>
-    </div>
     
-    <div id="searchTab" class="tab-content">
-        <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
-        <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
-        
-        <input type="text" id="searchInput" placeholder="SandSmoke" onkeypress="handleKeyPress(event)">
-        
-        <div class="icon-container">
-            <div class="icon" onclick="window.open('https://flick-fusion.panel-laboralcj.gob.mx/')">
-                <img src="https://tse3.mm.bing.net/th?id=OIG1.6c7lMFGTQp9sSUq9QjdR&pid=ImgGn" alt="アイコン1">
-            </div>
-            <div class="icon" onclick="window.open('https://scratch.mit.edu/users/proxy_minotaur_sab/')">
-                <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG-UPEpGiUmLUvyTKINe5lrNdRrjsrxgVfr6wDMN0CLStbOKDqIoK81ZNmgvECDtOsdoWq87mx26qcpoQ1Pyrkl-_YPIH2YqrFYEDm9aR47DL4Vcar6RZDjaWvdw-zxvVnPF9U3e9_-UBuNrgEtdaPyygeyyNMzUFMat_WeATdfpD/919846.png?errorImage=false" alt="アイコン2">
-            </div>
-            <div class="icon" onclick="window.open('https://discord.gg/8nedA5ZYy8')">
-                <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG9Pf23FWtdraDrlKE3uxUVuTwRJocD6VOjpjR_24iE4PkjAVt9nHenCu29bq5KhEbHiXGA0QKbxQAUESJEOy_ZeLPw4aS5i0AX4GyF1Thzxze-yw8YUpBfq8NMIXYs8UMiaAwnGfyOCJrCqr5cQA5jhIBS7J42UhoQrmyAOaKyRT/discord-icon.svg?errorImage=false" alt="アイコン3">
-            </div>
-            <div class="icon" onclick="window.open('https://www.chatwork.com/g/web-of-the-library')">
-                <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG-UPEpGiUmLUvyTKINe5lrNdRrjsrxgVfr6wDMN0CLStomoytCTiQIHfIHZkRhmIYcsxVcXcFX4a1T2gXecRU8S_YPIH2YqrFYEDm9aR47DL4Vcar6RZDjaWvdw-zxvVnMOanpNJMoCQ7p8f1hpaYM1IbtxeaXFLpB1RD21E3qzg/906366.png?errorImage=false" alt="アイコン4">
-            </div>
-            <div class="icon" onclick="window.open('https://github.com/mino-hobby-pro')">
-                <img src="https://img.icons8.com/?size=256&id=52539&format=png" alt="アイコン5">
-            </div>
+    <!-- プロキシモード切替ボタン -->
+    <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
+    <!-- Rammerheadを起動ボタン -->
+    <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
+    
+    <input type="text" id="searchInput" placeholder="SandSmoke" onkeypress="handleKeyPress(event)">
+    
+    <div class="icon-container">
+        <div class="icon" onclick="window.open('https://flick-fusion.panel-laboralcj.gob.mx/')">
+            <img src="https://tse3.mm.bing.net/th?id=OIG1.6c7lMFGTQp9sSUq9QjdR&pid=ImgGn" alt="アイコン1">
         </div>
-    </div>
-
-    <div id="proxyTab" class="tab-content" style="display:none;">
-        <p>プロキシに関する情報やオプションをここに記載します。</p>
+        <div class="icon" onclick="window.open('https://scratch.mit.edu/users/proxy_minotaur_sab/')">
+            <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG-UPEpGiUmLUvyTKINe5lrNdRrjsrxgVfr6wDMN0CLStbOKDqIoK81ZNmgvECDtOsdoWq87mx26qcpoQ1Pyrkl-_YPIH2YqrFYEDm9aR47DL4Vcar6RZDjaWvdw-zxvVnPF9U3e9_-UBuNrgEtdaPyygeyyNMzUFMat_WeATdfpD/919846.png?errorImage=false" alt="アイコン2">
+        </div>
+        <div class="icon" onclick="window.open('https://discord.gg/8nedA5ZYy8')">
+            <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG9Pf23FWtdraDrlKE3uxUVuTwRJocD6VOjpjR_24iE4PkjAVt9nHenCu29bq5KhEbHiXGA0QKbxQAUESJEOy_ZeLPw4aS5i0AX4GyF1Thzxze-yw8YUpBfq8NMIXYs8UMiaAwnGfyOCJrCqr5cQA5jhIBS7J42UhoQrmyAOaKyRT/discord-icon.svg?errorImage=false" alt="アイコン3">
+        </div>
+        <div class="icon" onclick="window.open('https://www.chatwork.com/g/web-of-the-library')">
+            <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG-UPEpGiUmLUvyTKINe5lrNdRrjsrxgVfr6wDMN0CLStomoytCTiQIHfIHZkRhmIYcsxVcXcFX4a1T2gXecRU8S_YPIH2YqrFYEDm9aR47DL4Vcar6RZDjaWvdw-zxvVnMOanpNJMoCQ7p8f1hpaYM1IbtxeaXFLpB1RD21E3qzg/906366.png?errorImage=false" alt="アイコン4">
+        </div>
+        <div class="icon" onclick="window.open('https://github.com/mino-hobby-pro')">
+            <img src="https://img.icons8.com/?size=256&id=52539&format=png" alt="アイコン5">
+        </div>
     </div>
 
     <script>
@@ -119,7 +96,7 @@
         document.getElementById('rammerheadButton').onclick = function() {
             const link = prompt("URLを入力してください 読み込みには時間がかかります:");
             if (link) {
-                // プロキシを使用してURLをアンブロック
+                // プロキシを使用してURLをアンブロック  APIの権利はTacoGuy様にあります
                 const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
                 fetch(proxy + link)
                     .then((response) => response.text())
@@ -135,28 +112,15 @@
                     const host = window.location.origin;
 
                     if (isProxyMode) {
+                        // プロキシモードがオンのときの処理
                         const url = "https://google.com/search?q=" + encodeURIComponent(query);
                         window.location.href = `${host}/proxy/${url}`;
                     } else {
+                        // 通常の処理
                         window.location.href = `${host}/search?q=${encodeURIComponent(query)}`;
                     }
                 }
             }
-        }
-
-        function switchTab(tabName) {
-            const tabs = document.querySelectorAll('.tab');
-            const tabContents = document.querySelectorAll('.tab-content');
-
-            tabs.forEach(tab => {
-                tab.classList.remove('active');
-            });
-            tabContents.forEach(content => {
-                content.style.display = 'none';
-            });
-
-            document.querySelector(`.tab.${tabName}`).classList.add('active');
-            document.getElementById(`${tabName}Tab`).style.display = 'block';
         }
     </script>
 
