@@ -30,6 +30,7 @@
         }
         .icon-container {
             display: flex;
+            margin-top: 20px;
         }
         .icon {
             margin: 0 10px;
@@ -51,7 +52,7 @@
             color: #fff;
             border: none;
             border-radius: 5px;
-            margin-right: 10px; /* ボタン間にスペースを追加 */
+            margin-right: 10px; /* Add some space between buttons */
         }
         /* Canvasのスタイル */
         canvas {
@@ -113,10 +114,8 @@
 
     <!-- デプロイボタン -->
     <button class="deploy-button" id="deployButton">デプロイ</button>
-    <!-- URLリストボタン -->
-    <button class="deploy-button" id="urlListButton">URLリスト</button>
 
-    <!-- デプロイオーバーレイ -->
+    <!-- ポップアップオーバーレイ -->
     <div class="overlay" id="deployOverlay">
         <div class="overlay-content">
             <h2>デプロイオプション</h2>
@@ -134,80 +133,10 @@
         </div>
     </div>
 
-    <!-- URLリストオーバーレイ -->
-    <div class="overlay" id="urlListOverlay">
-        <div class="overlay-content">
-            <h2>保存されたURLリスト</h2>
-            <ul id="urlList"></ul>
-            <input type="text" id="newUrlInput" placeholder="新しいURLを追加">
-            <button onclick="addUrl()">追加</button>
-            <button onclick="closeUrlListOverlay()">閉じる</button>
-        </div>
-    </div>
-
     <canvas id="sandstormCanvas"></canvas>
 
-    <script type="module">
-        // Firebaseの初期化
-        import { initializeApp } from "firebase/app";
-        import { getDatabase, ref, onValue, push } from "firebase/database";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCFtCV9OP-oJqrzVaTqvuRkLD4GW2Hhhc0",
-            authDomain: "sandsmoke-79dca.firebaseapp.com",
-            databaseURL: "https://sandsmoke-79dca-default-rtdb.firebaseio.com",
-            projectId: "sandsmoke-79dca",
-            storageBucket: "sandsmoke-79dca.firebasestorage.app",
-            messagingSenderId: "61141711489",
-            appId: "1:61141711489:web:a1d074c6f9e6a3ecd26b80",
-            measurementId: "G-C8FH5PFNEP"
-        };
-
-        // Initialize Firebase
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        // URLリストを取得する関数
-        function getUrlList() {
-            const urlListRef = ref(database, 'urls/');
-            onValue(urlListRef, (snapshot) => {
-                const urlList = snapshot.val();
-                const urlListElement = document.getElementById('urlList');
-                urlListElement.innerHTML = ''; // 既存のリストをクリア
-
-                if (urlList) {
-                    Object.keys(urlList).forEach(key => {
-                        const li = document.createElement('li');
-                        li.textContent = urlList[key];
-                        urlListElement.appendChild(li);
-                    });
-                }
-            });
-        }
-
-        // 新しいURLを追加する関数
-        function addUrl() {
-            const newUrl = document.getElementById('newUrlInput').value;
-            if (newUrl) {
-                const urlListRef = ref(database, 'urls/');
-                push(urlListRef, newUrl); // 新しいURLをFirebaseに追加
-                document.getElementById('newUrlInput').value = ''; // 入力フィールドをクリア
-                getUrlList(); // リストを再取得
-            }
-        }
-
-        // URLリストオーバーレイを開く
-        document.getElementById('urlListButton').onclick = function() {
-            getUrlList(); // URLリストを取得
-            document.getElementById('urlListOverlay').style.display = 'flex';
-        };
-
-        // URLリストオーバーレイを閉じる
-        function closeUrlListOverlay() {
-            document.getElementById('urlListOverlay').style.display = 'none';
-        }
-
-        // 砂嵐の描画関数
+    <script>
+        let isProxyMode = false; // プロキシモードの状態
         const canvas = document.getElementById('sandstormCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -239,7 +168,6 @@
         drawSandstorm();
 
         // プロキシモードの切り替え
-        let isProxyMode = false;
         document.getElementById('proxyToggle').onclick = function() {
             isProxyMode = !isProxyMode;
             this.textContent = `プロキシ: ${isProxyMode ? 'ON' : 'OFF'}`;
@@ -249,6 +177,7 @@
         document.getElementById('rammerheadButton').onclick = function() {
             const link = prompt("URLを入力してください 読み込みには時間がかかります:");
             if (link) {
+                // プロキシを使用してURLをアンブロック  APIの権利はTacoGuy様にあります
                 const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
                 fetch(proxy + link)
                     .then((response) => response.text())
@@ -264,9 +193,11 @@
                     const host = window.location.origin;
 
                     if (isProxyMode) {
+                        // プロキシモードがオンのときの処理
                         const url = "https://google.com/search?q=" + encodeURIComponent(query);
                         window.location.href = `${host}/proxy/${url}`;
                     } else {
+                        // 通常の処理
                         window.location.href = `${host}/search?q=${encodeURIComponent(query)}`;
                     }
                 }
@@ -291,5 +222,6 @@
         <button id="accept-btn" onclick="acceptCookies()">同意する</button>
         <button id="reject-btn" onclick="rejectCookies()">拒否する</button>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
