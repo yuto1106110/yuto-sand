@@ -13,8 +13,8 @@
             height: 100vh;
             margin: 0;
             background-image: url('https://tse4.mm.bing.net/th?id=OIG4.gDAHAlmQD0nqjGKj5ehr&pid=ImgGn');
-            background-size: cover;
-            background-position: center;
+            background-size: cover; /* 背景画像を覆う */
+            background-position: center; /* 背景画像を中央に配置 */
             color: #fff;
         }
         h1 {
@@ -30,7 +30,6 @@
         }
         .icon-container {
             display: flex;
-            margin-top: 20px;
         }
         .icon {
             margin: 0 10px;
@@ -39,6 +38,9 @@
         .icon img {
             width: 60px;
             height: 60px;
+        }
+        .cookie-notice {
+            display: none;
         }
         .toggle-proxy, .launch-rammerhead, .deploy-button {
             padding: 5px 10px;
@@ -49,18 +51,20 @@
             color: #fff;
             border: none;
             border-radius: 5px;
-            margin-right: 10px;
+            margin-right: 10px; /* ボタン間にスペースを追加 */
         }
+        /* Canvasのスタイル */
         canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1;
+            z-index: -1; /* 背景に配置 */
         }
+        /* ポップアップオーバーレイのスタイル */
         .overlay {
-            display: none;
+            display: none; /* 初期状態は非表示 */
             position: fixed;
             top: 0;
             left: 0;
@@ -69,7 +73,7 @@
             background-color: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
-            z-index: 10;
+            z-index: 10; /* 他の要素の上に表示 */
         }
         .overlay-content {
             background-color: #fff;
@@ -153,85 +157,131 @@
             authDomain: "sandsmoke-79dca.firebaseapp.com",
             databaseURL: "https://sandsmoke-79dca-default-rtdb.firebaseio.com",
             projectId: "sandsmoke-79dca",
-            storageBucket: "sandsmoke-79dca.appspot.com",
+            storageBucket: "sandsmoke-79dca.firebasestorage.app",
             messagingSenderId: "61141711489",
             appId: "1:61141711489:web:a1d074c6f9e6a3ecd26b80",
             measurementId: "G-C8FH5PFNEP"
         };
 
-        // Firebaseの初期化
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
         const database = getDatabase(app);
 
-        // URLリストを表示する関数
-        function displayUrlList() {
-            const urlListElement = document.getElementById('urlList');
-            urlListElement.innerHTML = ''; // リストをクリア
+        // URLリストを取得する関数
+        function getUrlList() {
+            const urlListRef = ref(database, 'urls/');
+            onValue(urlListRef, (snapshot) => {
+                const urlList = snapshot.val();
+                const urlListElement = document.getElementById('urlList');
+                urlListElement.innerHTML = ''; // 既存のリストをクリア
 
-            const urlRef = ref(database, 'urls/');
-            onValue(urlRef, (snapshot) => {
-                snapshot.forEach((childSnapshot) => {
-                    const url = childSnapshot.val();
-                    const li = document.createElement('li');
-                    li.textContent = url;
-                    urlListElement.appendChild(li);
-                });
+                if (urlList) {
+                    Object.keys(urlList).forEach(key => {
+                        const li = document.createElement('li');
+                        li.textContent = urlList[key];
+                        urlListElement.appendChild(li);
+                    });
+                }
             });
         }
 
-        // URLを追加する関数
+        // 新しいURLを追加する関数
         function addUrl() {
             const newUrl = document.getElementById('newUrlInput').value;
             if (newUrl) {
-                const urlRef = ref(database, 'urls/');
-                push(urlRef, newUrl); // 新しいURLをFirebaseに追加
+                const urlListRef = ref(database, 'urls/');
+                push(urlListRef, newUrl); // 新しいURLをFirebaseに追加
                 document.getElementById('newUrlInput').value = ''; // 入力フィールドをクリア
+                getUrlList(); // リストを再取得
             }
         }
 
         // URLリストオーバーレイを開く
         document.getElementById('urlListButton').onclick = function() {
-            displayUrlList(); // URLリストを表示
-            document.getElementById('urlListOverlay').style.display = 'flex'; // オーバーレイを表示
+            getUrlList(); // URLリストを取得
+            document.getElementById('urlListOverlay').style.display = 'flex';
         };
+
+        // URLリストオーバーレイを閉じる
+        function closeUrlListOverlay() {
+            document.getElementById('urlListOverlay').style.display = 'none';
+        }
+
+        // 砂嵐の描画関数
+        const canvas = document.getElementById('sandstormCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Canvasのサイズ設定
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        // 砂嵐の描画関数
+        function drawSandstorm() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height); // Canvasをクリア
+            ctx.fillStyle = 'rgba(222, 184, 135, 0.1)'; // 砂の色
+            ctx.fillRect(0, 0, canvas.width, canvas.height); // 砂を塗りつぶす
+
+            // ランダムな砂粒を描画
+            for (let i = 0; i < 100; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 5 + 1; // 1〜6のサイズ
+                ctx.fillStyle = 'rgba(222, 184, 135, 0.1)'; // 砂の色
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            requestAnimationFrame(drawSandstorm); // アニメーションループ
+        }
+
+        // 砂嵐の描画開始
+        drawSandstorm();
+
+        // プロキシモードの切り替え
+        let isProxyMode = false;
+        document.getElementById('proxyToggle').onclick = function() {
+            isProxyMode = !isProxyMode;
+            this.textContent = `プロキシ: ${isProxyMode ? 'ON' : 'OFF'}`;
+        };
+
+        // Rammerheadを起動ボタンの処理
+        document.getElementById('rammerheadButton').onclick = function() {
+            const link = prompt("URLを入力してください 読み込みには時間がかかります:");
+            if (link) {
+                const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
+                fetch(proxy + link)
+                    .then((response) => response.text())
+                    .then((text) => document.write(text))
+                    .catch((error) => alert("エラーが発生しました: " + error));
+            }
+        };
+
+        function handleKeyPress(event) {
+            if (event.key === 'Enter') {
+                const query = document.getElementById('searchInput').value;
+                if (query) {
+                    const host = window.location.origin;
+
+                    if (isProxyMode) {
+                        const url = "https://google.com/search?q=" + encodeURIComponent(query);
+                        window.location.href = `${host}/proxy/${url}`;
+                    } else {
+                        window.location.href = `${host}/search?q=${encodeURIComponent(query)}`;
+                    }
+                }
+            }
+        }
 
         // デプロイオーバーレイの表示
         document.getElementById('deployButton').onclick = function() {
             document.getElementById('deployOverlay').style.display = 'flex';
         };
 
-        // オーバーレイを閉じる
+        // デプロイオーバーレイの閉じる
         function closeOverlay() {
             document.getElementById('deployOverlay').style.display = 'none';
         }
-
-        function closeUrlListOverlay() {
-            document.getElementById('urlListOverlay').style.display = 'none';
-        }
-
-        // 砂嵐の描画用の関数（省略可）
-        const canvas = document.getElementById('sandstormCanvas');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        function drawSandstorm() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            ctx.fillStyle = 'rgba(222, 184, 135, 0.1)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            for (let i = 0; i < 100; i++) {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const size = Math.random() * 5 + 1;
-                ctx.fillStyle = 'rgba(222, 184, 135, 0.1)';
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-            requestAnimationFrame(drawSandstorm);
-        }
-
-        drawSandstorm(); // 砂嵐の描画を開始
     </script>
 
     <p>↑Donate to the developer↑</p>
