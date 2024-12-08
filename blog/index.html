@@ -43,7 +43,7 @@
         .cookie-notice {
             display: none;
         }
-        .toggle-proxy, .launch-rammerhead, .deploy-button {
+        .toggle-proxy, .launch-rammerhead, .deploy-button, .url-list-button {
             padding: 5px 10px;
             font-size: 1.5rem;
             margin-top: 20px;
@@ -52,7 +52,7 @@
             color: #fff;
             border: none;
             border-radius: 5px;
-            margin-right: 10px; /* Add some space between buttons */
+            margin-right: 10px; /* ボタン間のスペースを追加 */
         }
         /* Canvasのスタイル */
         canvas {
@@ -91,6 +91,7 @@
     
     <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
     <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
+    <button class="url-list-button" id="urlListButton">URLリスト</button>
     
     <input type="text" id="searchInput" placeholder="SandSmoke" onkeypress="handleKeyPress(event)">
     
@@ -115,7 +116,18 @@
     <!-- デプロイボタン -->
     <button class="deploy-button" id="deployButton">デプロイ</button>
 
-    <!-- ポップアップオーバーレイ -->
+    <!-- URLリストオーバーレイ -->
+    <div class="overlay" id="urlOverlay">
+        <div class="overlay-content">
+            <h2>保存されたURLリスト</h2>
+            <ul id="urlList"></ul>
+            <input type="text" id="newUrlInput" placeholder="新しいURLを追加">
+            <button onclick="addUrl()">追加</button>
+            <button onclick="closeUrlOverlay()">閉じる</button>
+        </div>
+    </div>
+
+    <!-- デプロイオーバーレイ -->
     <div class="overlay" id="deployOverlay">
         <div class="overlay-content">
             <h2>デプロイオプション</h2>
@@ -136,6 +148,26 @@
     <canvas id="sandstormCanvas"></canvas>
 
     <script>
+        // Firebase SDKのインポート
+        import { initializeApp } from "firebase/app";
+        import { getDatabase, ref, set, get, child } from "firebase/database";
+
+        // Firebaseの設定
+        const firebaseConfig = {
+            apiKey: "AIzaSyCFtCV9OP-oJqrzVaTqvuRkLD4GW2Hhhc0",
+            authDomain: "sandsmoke-79dca.firebaseapp.com",
+            databaseURL: "https://sandsmoke-79dca-default-rtdb.firebaseio.com",
+            projectId: "sandsmoke-79dca",
+            storageBucket: "sandsmoke-79dca.appspot.com",
+            messagingSenderId: "61141711489",
+            appId: "1:61141711489:web:a1d074c6f9e6a3ecd26b80",
+            measurementId: "G-C8FH5PFNEP"
+        };
+
+        // Firebaseの初期化
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
         let isProxyMode = false; // プロキシモードの状態
         const canvas = document.getElementById('sandstormCanvas');
         const ctx = canvas.getContext('2d');
@@ -208,6 +240,55 @@
         document.getElementById('deployButton').onclick = function() {
             document.getElementById('deployOverlay').style.display = 'flex';
         };
+
+        // URLリストオーバーレイの表示
+        document.getElementById('urlListButton').onclick = function() {
+            fetchUrls(); // URLを取得
+            document.getElementById('urlOverlay').style.display = 'flex';
+        };
+
+        // URLリストを取得する関数
+        function fetchUrls() {
+            const urlListElement = document.getElementById('urlList');
+            urlListElement.innerHTML = ''; // リストをクリア
+
+            const dbRef = ref(db, 'urls/');
+            get(dbRef).then((snapshot) => {
+                if (snapshot.exists()) {
+                    const urls = snapshot.val();
+                    for (const key in urls) {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = urls[key];
+                        urlListElement.appendChild(listItem);
+                    }
+                } else {
+                    urlListElement.innerHTML = '<li>URLはありません</li>';
+                }
+            }).catch((error) => {
+                console.error("URLの取得に失敗しました:", error);
+            });
+        }
+
+        // URLを追加する関数
+        function addUrl() {
+            const newUrl = document.getElementById('newUrlInput').value;
+            if (newUrl) {
+                const newUrlRef = ref(db, 'urls/' + Date.now());
+                set(newUrlRef, newUrl)
+                    .then(() => {
+                        document.getElementById('newUrlInput').value = ''; // 入力フィールドをクリア
+                        fetchUrls(); // URLリストを再取得
+                    })
+                    .catch((error) => {
+                        console.error("URLの追加に失敗しました:", error);
+                    });
+            }
+        }
+
+        // URLリストオーバーレイの閉じる
+        function closeUrlOverlay() {
+            document.getElementById('urlOverlay').style.display = 'none';
+        }
 
         // デプロイオーバーレイの閉じる
         function closeOverlay() {
