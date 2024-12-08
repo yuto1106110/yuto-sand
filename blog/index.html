@@ -43,7 +43,7 @@
         .cookie-notice {
             display: none;
         }
-        .toggle-proxy, .launch-rammerhead {
+        .toggle-proxy, .launch-rammerhead, .deploy-button {
             padding: 5px 10px;
             font-size: 1.5rem;
             margin-top: 20px;
@@ -63,15 +63,33 @@
             height: 100%;
             z-index: -1; /* 背景に配置 */
         }
+        /* ポップアップオーバーレイのスタイル */
+        .overlay {
+            display: none; /* 初期状態は非表示 */
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+            z-index: 10; /* 他の要素の上に表示 */
+        }
+        .overlay-content {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            text-align: center;
+            color: black;
+        }
     </style>
 </head>
 <body>
 
     <h1>SandSmoke</h1>
     
-    <!-- プロキシモード切替ボタン -->
     <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
-    <!-- Rammerheadを起動ボタン -->
     <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
     
     <input type="text" id="searchInput" placeholder="SandSmoke" onkeypress="handleKeyPress(event)">
@@ -94,7 +112,27 @@
         </div>
     </div>
 
-    <!-- Canvas要素 -->
+    <!-- デプロイボタン -->
+    <button class="deploy-button" id="deployButton">デプロイ</button>
+
+    <!-- ポップアップオーバーレイ -->
+    <div class="overlay" id="deployOverlay">
+        <div class="overlay-content">
+            <h2>デプロイオプション</h2>
+            <p>以下のボタンをクリックして、各プラットフォームにデプロイできます。renderによるホストを強くお勧めします。</p>
+            <a href="https://vercel.com/import/project?template=https://github.com/mino-hobby-pro/sand-smoke-proxy" target="_blank">
+                <img src="https://vercel.com/button" alt="Deploy to Vercel" />
+            </a>
+            <a href="https://koyeb.com/deploy?type=github&repository=https://github.com/mino-hobby-pro/sand-smoke-proxy" target="_blank">
+                <img src="https://www.koyeb.com/static/images/deploy/button.svg" alt="Deploy to Koyeb" />
+            </a>
+            <a href="https://render.com/deploy?repo=https://github.com/mino-hobby-pro/sand-smoke-proxy" target="_blank">
+                <img src="https://render.com/images/deploy-to-render-button.svg" alt="Deploy to Render" />
+            </a>
+            <button onclick="closeOverlay()">閉じる</button>
+        </div>
+    </div>
+
     <canvas id="sandstormCanvas"></canvas>
 
     <script>
@@ -164,6 +202,16 @@
                     }
                 }
             }
+        }
+
+        // デプロイオーバーレイの表示
+        document.getElementById('deployButton').onclick = function() {
+            document.getElementById('deployOverlay').style.display = 'flex';
+        };
+
+        // デプロイオーバーレイの閉じる
+        function closeOverlay() {
+            document.getElementById('deployOverlay').style.display = 'none';
         }
     </script>
 
