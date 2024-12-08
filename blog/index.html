@@ -13,8 +13,8 @@
             height: 100vh;
             margin: 0;
             background-image: url('https://tse4.mm.bing.net/th?id=OIG4.gDAHAlmQD0nqjGKj5ehr&pid=ImgGn');
-            background-size: cover; /* 背景画像を覆う */
-            background-position: center; /* 背景画像を中央に配置 */
+            background-size: cover;
+            background-position: center;
             color: #fff;
         }
         h1 {
@@ -40,10 +40,7 @@
             width: 60px;
             height: 60px;
         }
-        .cookie-notice {
-            display: none;
-        }
-        .toggle-proxy, .launch-rammerhead, .deploy-button, .url-list-button {
+        .toggle-proxy, .launch-rammerhead, .deploy-button {
             padding: 5px 10px;
             font-size: 1.5rem;
             margin-top: 20px;
@@ -52,20 +49,18 @@
             color: #fff;
             border: none;
             border-radius: 5px;
-            margin-right: 10px; /* ボタン間のスペースを追加 */
+            margin-right: 10px;
         }
-        /* Canvasのスタイル */
         canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* 背景に配置 */
+            z-index: -1;
         }
-        /* ポップアップオーバーレイのスタイル */
         .overlay {
-            display: none; /* 初期状態は非表示 */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -74,7 +69,7 @@
             background-color: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
-            z-index: 10; /* 他の要素の上に表示 */
+            z-index: 10;
         }
         .overlay-content {
             background-color: #fff;
@@ -91,7 +86,6 @@
     
     <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
     <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
-    <button class="url-list-button" id="urlListButton">URLリスト</button>
     
     <input type="text" id="searchInput" placeholder="SandSmoke" onkeypress="handleKeyPress(event)">
     
@@ -115,17 +109,8 @@
 
     <!-- デプロイボタン -->
     <button class="deploy-button" id="deployButton">デプロイ</button>
-
-    <!-- URLリストオーバーレイ -->
-    <div class="overlay" id="urlOverlay">
-        <div class="overlay-content">
-            <h2>保存されたURLリスト</h2>
-            <ul id="urlList"></ul>
-            <input type="text" id="newUrlInput" placeholder="新しいURLを追加">
-            <button onclick="addUrl()">追加</button>
-            <button onclick="closeUrlOverlay()">閉じる</button>
-        </div>
-    </div>
+    <!-- URLリストボタン -->
+    <button class="deploy-button" id="urlListButton">URLリスト</button>
 
     <!-- デプロイオーバーレイ -->
     <div class="overlay" id="deployOverlay">
@@ -145,14 +130,24 @@
         </div>
     </div>
 
+    <!-- URLリストオーバーレイ -->
+    <div class="overlay" id="urlListOverlay">
+        <div class="overlay-content">
+            <h2>保存されたURLリスト</h2>
+            <ul id="urlList"></ul>
+            <input type="text" id="newUrlInput" placeholder="新しいURLを追加">
+            <button onclick="addUrl()">追加</button>
+            <button onclick="closeUrlListOverlay()">閉じる</button>
+        </div>
+    </div>
+
     <canvas id="sandstormCanvas"></canvas>
 
-    <script>
-        // Firebase SDKのインポート
+    <script type="module">
+        // Firebaseの初期化
         import { initializeApp } from "firebase/app";
-        import { getDatabase, ref, set, get, child } from "firebase/database";
+        import { getDatabase, ref, onValue, push } from "firebase/database";
 
-        // Firebaseの設定
         const firebaseConfig = {
             apiKey: "AIzaSyCFtCV9OP-oJqrzVaTqvuRkLD4GW2Hhhc0",
             authDomain: "sandsmoke-79dca.firebaseapp.com",
@@ -166,106 +161,21 @@
 
         // Firebaseの初期化
         const app = initializeApp(firebaseConfig);
-        const db = getDatabase(app);
+        const database = getDatabase(app);
 
-        let isProxyMode = false; // プロキシモードの状態
-        const canvas = document.getElementById('sandstormCanvas');
-        const ctx = canvas.getContext('2d');
-
-        // Canvasのサイズ設定
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
-
-        // 砂嵐の描画関数
-        function drawSandstorm() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Canvasをクリア
-            ctx.fillStyle = 'rgba(222, 184, 135, 0.1)'; // 砂の色
-            ctx.fillRect(0, 0, canvas.width, canvas.height); // 砂を塗りつぶす
-
-            // ランダムな砂粒を描画
-            for (let i = 0; i < 100; i++) {
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const size = Math.random() * 5 + 1; // 1〜6のサイズ
-                ctx.fillStyle = 'rgba(222, 184, 135, 0.1)'; // 砂の色
-                ctx.beginPath();
-                ctx.arc(x, y, size, 0, Math.PI * 2);
-                ctx.fill();
-            }
-
-            requestAnimationFrame(drawSandstorm); // アニメーションループ
-        }
-
-        // 砂嵐の描画開始
-        drawSandstorm();
-
-        // プロキシモードの切り替え
-        document.getElementById('proxyToggle').onclick = function() {
-            isProxyMode = !isProxyMode;
-            this.textContent = `プロキシ: ${isProxyMode ? 'ON' : 'OFF'}`;
-        };
-
-        // Rammerheadを起動ボタンの処理
-        document.getElementById('rammerheadButton').onclick = function() {
-            const link = prompt("URLを入力してください 読み込みには時間がかかります:");
-            if (link) {
-                // プロキシを使用してURLをアンブロック  APIの権利はTacoGuy様にあります
-                const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
-                fetch(proxy + link)
-                    .then((response) => response.text())
-                    .then((text) => document.write(text))
-                    .catch((error) => alert("エラーが発生しました: " + error));
-            }
-        };
-
-        function handleKeyPress(event) {
-            if (event.key === 'Enter') {
-                const query = document.getElementById('searchInput').value;
-                if (query) {
-                    const host = window.location.origin;
-
-                    if (isProxyMode) {
-                        // プロキシモードがオンのときの処理
-                        const url = "https://google.com/search?q=" + encodeURIComponent(query);
-                        window.location.href = `${host}/proxy/${url}`;
-                    } else {
-                        // 通常の処理
-                        window.location.href = `${host}/search?q=${encodeURIComponent(query)}`;
-                    }
-                }
-            }
-        }
-
-        // デプロイオーバーレイの表示
-        document.getElementById('deployButton').onclick = function() {
-            document.getElementById('deployOverlay').style.display = 'flex';
-        };
-
-        // URLリストオーバーレイの表示
-        document.getElementById('urlListButton').onclick = function() {
-            fetchUrls(); // URLを取得
-            document.getElementById('urlOverlay').style.display = 'flex';
-        };
-
-        // URLリストを取得する関数
-        function fetchUrls() {
+        // URLリストを表示する関数
+        function displayUrlList() {
             const urlListElement = document.getElementById('urlList');
             urlListElement.innerHTML = ''; // リストをクリア
 
-            const dbRef = ref(db, 'urls/');
-            get(dbRef).then((snapshot) => {
-                if (snapshot.exists()) {
-                    const urls = snapshot.val();
-                    for (const key in urls) {
-                        const listItem = document.createElement('li');
-                        listItem.textContent = urls[key];
-                        urlListElement.appendChild(listItem);
-                    }
-                } else {
-                    urlListElement.innerHTML = '<li>URLはありません</li>';
-                }
-            }).catch((error) => {
-                console.error("URLの取得に失敗しました:", error);
+            const urlRef = ref(database, 'urls/');
+            onValue(urlRef, (snapshot) => {
+                snapshot.forEach((childSnapshot) => {
+                    const url = childSnapshot.val();
+                    const li = document.createElement('li');
+                    li.textContent = url;
+                    urlListElement.appendChild(li);
+                });
             });
         }
 
@@ -273,27 +183,55 @@
         function addUrl() {
             const newUrl = document.getElementById('newUrlInput').value;
             if (newUrl) {
-                const newUrlRef = ref(db, 'urls/' + Date.now());
-                set(newUrlRef, newUrl)
-                    .then(() => {
-                        document.getElementById('newUrlInput').value = ''; // 入力フィールドをクリア
-                        fetchUrls(); // URLリストを再取得
-                    })
-                    .catch((error) => {
-                        console.error("URLの追加に失敗しました:", error);
-                    });
+                const urlRef = ref(database, 'urls/');
+                push(urlRef, newUrl); // 新しいURLをFirebaseに追加
+                document.getElementById('newUrlInput').value = ''; // 入力フィールドをクリア
             }
         }
 
-        // URLリストオーバーレイの閉じる
-        function closeUrlOverlay() {
-            document.getElementById('urlOverlay').style.display = 'none';
-        }
+        // URLリストオーバーレイを開く
+        document.getElementById('urlListButton').onclick = function() {
+            displayUrlList(); // URLリストを表示
+            document.getElementById('urlListOverlay').style.display = 'flex'; // オーバーレイを表示
+        };
 
-        // デプロイオーバーレイの閉じる
+        // デプロイオーバーレイの表示
+        document.getElementById('deployButton').onclick = function() {
+            document.getElementById('deployOverlay').style.display = 'flex';
+        };
+
+        // オーバーレイを閉じる
         function closeOverlay() {
             document.getElementById('deployOverlay').style.display = 'none';
         }
+
+        function closeUrlListOverlay() {
+            document.getElementById('urlListOverlay').style.display = 'none';
+        }
+
+        // 砂嵐の描画用の関数（省略可）
+        const canvas = document.getElementById('sandstormCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function drawSandstorm() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(222, 184, 135, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < 100; i++) {
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const size = Math.random() * 5 + 1;
+                ctx.fillStyle = 'rgba(222, 184, 135, 0.1)';
+                ctx.beginPath();
+                ctx.arc(x, y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+            requestAnimationFrame(drawSandstorm);
+        }
+
+        drawSandstorm(); // 砂嵐の描画を開始
     </script>
 
     <p>↑Donate to the developer↑</p>
@@ -303,6 +241,5 @@
         <button id="accept-btn" onclick="acceptCookies()">同意する</button>
         <button id="reject-btn" onclick="rejectCookies()">拒否する</button>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
