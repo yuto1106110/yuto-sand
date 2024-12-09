@@ -10,7 +10,7 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
-document.getElementById('').addEventListener('click', function() {
+document.getElementById('urlListButton').addEventListener('click', function() {
     document.cookie = "yuki=True; max-age=31536000; path=/";
     location.href = "/list";
 });
