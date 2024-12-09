@@ -20,6 +20,28 @@
         h1 {
             font-size: 2.5rem;
         }
+        .top-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 20; /* 他の要素の上に表示 */
+        }
+        .top-bar button {
+            padding: 5px 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background-color: #444;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            margin-right: 10px; /* ボタン間のスペース */
+        }
         input[type="text"] {
             width: 60%;
             padding: 10px;
@@ -87,13 +109,19 @@
 </head>
 <body>
 
+    <div class="top-bar">
+        <button id="urlListButton">URLリスト</button>
+        <button id="openChatButton">オープンチャット</button>
+        <button class="deploy-button" id="deployButton">デプロイ</button>
+    </div>
+
     <h1>SandSmoke</h1>
-    
+
     <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
     <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
-    
+
     <input type="text" id="searchInput" placeholder="SandSmoke" onkeypress="handleKeyPress(event)">
-    
+
     <div class="icon-container">
         <div class="icon" onclick="window.open('https://flick-fusion.panel-laboralcj.gob.mx/')">
             <img src="https://tse3.mm.bing.net/th?id=OIG1.6c7lMFGTQp9sSUq9QjdR&pid=ImgGn" alt="アイコン1">
@@ -111,9 +139,6 @@
             <img src="https://img.icons8.com/?size=256&id=52539&format=png" alt="アイコン5">
         </div>
     </div>
-
-    <!-- デプロイボタン -->
-    <button class="deploy-button" id="deployButton">デプロイ</button>
 
     <!-- ポップアップオーバーレイ -->
     <div class="overlay" id="deployOverlay">
@@ -213,6 +238,16 @@
         function closeOverlay() {
             document.getElementById('deployOverlay').style.display = 'none';
         }
+
+        // URLリストボタンの処理
+        document.getElementById('urlListButton').onclick = function() {
+            window.location.href = '/list';
+        };
+
+        // オープンチャットボタンの処理
+        document.getElementById('openChatButton').onclick = function() {
+            window.location.href = '/chat';
+        };
     </script>
 
     <p>↑Donate to the developer↑</p>
