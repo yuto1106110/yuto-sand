@@ -112,7 +112,8 @@
     <div class="top-bar">
         <button id="urlListButton">URLリスト</button>
         <button id="openChatButton">オープンチャット</button>
-        <button id="proxyButton">New proxy</button>
+        <button id="uvproxyButton">New UV proxy</button>
+        <button id="proxyButton">New rammer proxy</button>
         <button class="deploy-button" id="deployButton">デプロイ</button>
     </div>
 
@@ -249,7 +250,12 @@
         document.getElementById('proxyButton').onclick = function() {
             window.location.href = '/byeschool';
         };
-
+        
+        // ボタンの処理
+        document.getElementById('uvproxyButton').onclick = function() {
+            window.location.href = '/ultra';
+        };
+        
         // オープンチャットボタンの処理
         document.getElementById('openChatButton').onclick = function() {
             window.location.href = '/chat';
