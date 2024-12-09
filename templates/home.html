@@ -112,6 +112,7 @@
     <div class="top-bar">
         <button id="urlListButton">URLリスト</button>
         <button id="openChatButton">オープンチャット</button>
+        <button id="proxyButton">New proxy</button>
         <button class="deploy-button" id="deployButton">デプロイ</button>
     </div>
 
@@ -242,6 +243,11 @@
         // URLリストボタンの処理
         document.getElementById('urlListButton').onclick = function() {
             window.location.href = '/list';
+        };
+
+        // ボタンの処理
+        document.getElementById('proxyButton').onclick = function() {
+            window.location.href = '/byeschool';
         };
 
         // オープンチャットボタンの処理
