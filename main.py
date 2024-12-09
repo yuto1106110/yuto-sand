@@ -699,8 +699,14 @@ def page(request: Request,__):
     return template("APIwait.html",{"request": request},status_code=500)
 
 @app.exception_handler(APItimeoutError)
-def APIwait(request: Request,exception: APItimeoutError):
-    return template("APIwait.html",{"request": request},status_code=500)
+async def APIwait(request: Request, exception: APItimeoutError):
+    # リクエストのパスが静的ファイルのパスの場合はエラーを無視
+    if request.url.path.startswith("/static/"):
+        return await request.app.router.default_response(request)
+
+    # それ以外の場合は APIwait.html を表示
+    return template("APIwait.html", {"request": request}, status_code=500)
+
 
 g_videoid = None
 
