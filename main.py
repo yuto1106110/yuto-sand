@@ -692,7 +692,7 @@ def list_page(response: Response, request: Request):
     # UVプロキシ。借りるときは一言
     # TIWをstatic形式で復帰させた
     # ここでは単純にhtmlを返す
-    return static("index.js", {"request": request})
+    return static("index.html", {"request": request})
 
 @app.exception_handler(500)
 def page(request: Request,__):
