@@ -15,7 +15,7 @@ document.getElementById('urlListButton').addEventListener('click', function() {
     location.href = "/list";
 });
 
-document.getElementById('').addEventListener('click', function() {
+document.getElementById('openChatButton').addEventListener('click', function() {
     document.cookie = "yuki=True; max-age=31536000; path=/";
     location.href = "chat/";
 });
