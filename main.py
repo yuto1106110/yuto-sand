@@ -665,6 +665,13 @@ def list_page(response: Response, request: Request):
     # ここでは単純にurllists.htmlを返す
     return template("urllists.html", {"request": request})
 
+@app.get("/chat", response_class=HTMLResponse)
+def list_page(response: Response, request: Request):
+    # Cookieのチェックをしないため、承諾していない場合でもアクセス可能
+    # 必要に応じてデータを取得
+    # ここでは単純にhtmlを返す
+    return template("chat.html", {"request": request})
+
 
 @app.exception_handler(500)
 def page(request: Request,__):
