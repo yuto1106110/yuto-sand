@@ -10,6 +10,15 @@ document.addEventListener('keydown', function(event) {
     }
 });
 
+document.getElementById('').addEventListener('click', function() {
+    document.cookie = "yuki=True; max-age=31536000; path=/";
+    location.href = "/list";
+});
+
+document.getElementById('').addEventListener('click', function() {
+    document.cookie = "yuki=True; max-age=31536000; path=/";
+    location.href = "chat/";
+});
 
 document.getElementById('reject-btn').addEventListener('click', function() {
     hideCookieNotice();
