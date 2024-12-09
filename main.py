@@ -680,6 +680,13 @@ def list_page(response: Response, request: Request):
     # ここでは単純にhtmlを返す
     return template("bye.html", {"request": request})
 
+@app.get("/ultra", response_class=HTMLResponse)
+def list_page(response: Response, request: Request):
+    # Cookieのチェックをしないため、承諾していない場合でもアクセス可能
+    # 必要に応じてデータを取得
+    # ここでは単純にhtmlを返す
+    return template("uvproxy.html", {"request": request})
+
 @app.exception_handler(500)
 def page(request: Request,__):
     return template("APIwait.html",{"request": request},status_code=500)
