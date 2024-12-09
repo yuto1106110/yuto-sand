@@ -680,38 +680,13 @@ def list_page(response: Response, request: Request):
     # ここでは単純にhtmlを返す
     return template("bye.html", {"request": request})
 
-@app.get("/ultra", response_class=HTMLResponse)
-def list_page(response: Response, request: Request):
-    # UVプロキシ。借りるときは一言
-    # TIWをstatic形式で復帰させた
-    # ここでは単純にhtmlを返す
-    return template("uvproxy.html", {"request": request})
-
-@app.get("/templates/", response_class=HTMLResponse)
-def list_page(response: Response, request: Request):
-    # UVプロキシ。借りるときは一言
-    # TIWをstatic形式で復帰させた
-    # ここでは単純にhtmlを返す
-    return template("index.html", {"request": request})
-
 @app.exception_handler(500)
-async def handle_500_error(request: Request, exc: Exception):
-    # リクエストのパスが静的ファイルのパスの場合はエラーを無視
-    if request.url.path.startswith("/static/"):
-        return await request.app.router.default_response(request)
-
-    # それ以外の場合は APIwait.html を表示
-    return HTMLResponse(content=template("APIwait.html", {"request": request}), status_code=500)
+def page(request: Request,__):
+    return template("APIwait.html",{"request": request},status_code=500)
 
 @app.exception_handler(APItimeoutError)
-async def APIwait(request: Request, exception: APItimeoutError):
-    # リクエストのパスが静的ファイルのパスの場合はエラーを無視
-    if request.url.path.startswith("/static/"):
-        return await request.app.router.default_response(request)
-
-    # それ以外の場合は APIwait.html を表示
-    return template("APIwait.html", {"request": request}, status_code=500)
-
+def APIwait(request: Request,exception: APItimeoutError):
+    return template("APIwait.html",{"request": request},status_code=500)
 
 g_videoid = None
 
