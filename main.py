@@ -660,6 +660,13 @@ def home():
     global url
     url = requests.get(r'https://raw.githubusercontent.com/mochidukiyukimi/yuki-youtube-instance/main/instance.txt').text.rstrip()
 
+@app.get("/list", response_class=HTMLResponse)
+def list_page(response: Response, request: Request, yuki: Union[str] = Cookie(None)):
+    if not check_cokie(yuki):
+        return redirect("/")
+    response.set_cookie("yuki", "True", max_age=60 * 60 * 24 * 7)
+    return template("urllists.html", {"request": request})
+
 
 @app.exception_handler(500)
 def page(request: Request,__):
