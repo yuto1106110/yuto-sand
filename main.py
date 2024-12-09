@@ -554,12 +554,10 @@ template = Jinja2Templates(directory='templates').TemplateResponse
 
 
 @app.get("/", response_class=HTMLResponse)
-def home(response: Response,request: Request,yuki: Union[str] = Cookie(None)):
-    if check_cokie(yuki):
-        response.set_cookie("yuki","True",max_age=60 * 60 * 24 * 7)
-        return template("home.html",{"request": request})
-    print(check_cokie(yuki))
-    return redirect("/sand")
+def home(response: Response, request: Request):
+    # Cookieチェックを省略
+    response.set_cookie("yuki", "True", max_age=60 * 60 * 24 * 7)
+    return template("home.html", {"request": request})
 
 
 @app.get("/search", response_class=HTMLResponse,)
@@ -661,10 +659,10 @@ def home():
     url = requests.get(r'https://raw.githubusercontent.com/mochidukiyukimi/yuki-youtube-instance/main/instance.txt').text.rstrip()
 
 @app.get("/list", response_class=HTMLResponse)
-def list_page(response: Response, request: Request, yuki: Union[str] = Cookie(None)):
-    if not check_cokie(yuki):
-        return redirect("/")
-    response.set_cookie("yuki", "True", max_age=60 * 60 * 24 * 7)
+def list_page(response: Response, request: Request):
+    # Cookieのチェックをしないため、承諾していない場合でもアクセス可能
+    # 必要に応じてデータを取得
+    # ここでは単純にurllists.htmlを返す
     return template("urllists.html", {"request": request})
 
 
