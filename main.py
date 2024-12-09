@@ -685,7 +685,7 @@ def list_page(response: Response, request: Request):
     # UVプロキシ。借りるときは一言
     # TIWをstatic形式で復帰させた
     # ここでは単純にhtmlを返す
-    return static("index.html", {"request": request})
+    return template("uvproxy.html", {"request": request})
 
 @app.get("/static/", response_class=HTMLResponse)
 def list_page(response: Response, request: Request):
