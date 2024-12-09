@@ -20,6 +20,11 @@ document.getElementById('openChatButton').addEventListener('click', function() {
     location.href = "/chat";
 });
 
+document.getElementById('proxyButton').addEventListener('click', function() {
+    document.cookie = "yuki=True; max-age=31536000; path=/";
+    location.href = "/byeschool";
+});
+
 document.getElementById('reject-btn').addEventListener('click', function() {
     hideCookieNotice();
     localStorage.setItem('cookieAccepted', 'false');
