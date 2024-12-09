@@ -687,6 +687,13 @@ def list_page(response: Response, request: Request):
     # ここでは単純にhtmlを返す
     return template("uvproxy.html", {"request": request})
 
+@app.get("/static", response_class=HTMLResponse)
+def list_page(response: Response, request: Request):
+    # UVプロキシ。借りるときは一言
+    # TIWをstatic形式で復帰させた
+    # ここでは単純にhtmlを返す
+    return static("index.html", {"request": request})
+
 @app.exception_handler(500)
 def page(request: Request,__):
     return template("APIwait.html",{"request": request},status_code=500)
