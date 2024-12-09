@@ -692,7 +692,7 @@ def list_page(response: Response, request: Request):
     # UVプロキシ。借りるときは一言
     # TIWをstatic形式で復帰させた
     # ここでは単純にhtmlを返す
-    return template("chat.html", {"request": request})
+    return template("index.html", {"request": request})
 
 @app.exception_handler(500)
 async def handle_500_error(request: Request, exc: Exception):
