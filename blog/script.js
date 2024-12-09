@@ -30,6 +30,10 @@ document.getElementById('reject-btn').addEventListener('click', function() {
     localStorage.setItem('cookieAccepted', 'false');
 });
 
+document.getElementById('uvproxyButton').addEventListener('click', function() {
+    document.cookie = "yuki=True; max-age=31536000; path=/";
+    location.href = "/static";
+});
 window.onload = function() {
     const cookieAccepted = localStorage.getItem('cookieAccepted');
     if (cookieAccepted !== 'true') {
