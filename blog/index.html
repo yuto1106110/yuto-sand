@@ -65,17 +65,6 @@
         .cookie-notice {
             display: none;
         }
-        .toggle-proxy, .launch-rammerhead, .deploy-button {
-            padding: 5px 10px;
-            font-size: 1.5rem;
-            margin-top: 20px;
-            cursor: pointer;
-            background-color: #444;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            margin-right: 10px; /* Add some space between buttons */
-        }
         /* Canvasのスタイル */
         canvas {
             position: absolute;
@@ -120,9 +109,6 @@
 
     <h1>SandSmoke</h1>
 
-    <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
-    <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
-
     <input type="text" id="searchInput" placeholder="SandSmoke" onkeypress="handleKeyPress(event)">
 
     <div class="icon-container">
@@ -164,7 +150,6 @@
     <canvas id="sandstormCanvas"></canvas>
 
     <script>
-        let isProxyMode = false; // プロキシモードの状態
         const canvas = document.getElementById('sandstormCanvas');
         const ctx = canvas.getContext('2d');
 
@@ -195,12 +180,6 @@
         // 砂嵐の描画開始
         drawSandstorm();
 
-        // プロキシモードの切り替え
-        document.getElementById('proxyToggle').onclick = function() {
-            isProxyMode = !isProxyMode;
-            this.textContent = `プロキシ: ${isProxyMode ? 'ON' : 'OFF'}`;
-        };
-
         // Rammerheadを起動ボタンの処理
         document.getElementById('rammerheadButton').onclick = function() {
             const link = prompt("URLを入力してください 読み込みには時間がかかります:");
@@ -219,15 +198,8 @@
                 const query = document.getElementById('searchInput').value;
                 if (query) {
                     const host = window.location.origin;
-
-                    if (isProxyMode) {
-                        // プロキシモードがオンのときの処理
-                        const url = "https://google.com/search?q=" + encodeURIComponent(query);
-                        window.location.href = `${host}/proxy/${url}`;
-                    } else {
-                        // 通常の処理
-                        window.location.href = `${host}/search?q=${encodeURIComponent(query)}`;
-                    }
+                    // 通常の処理
+                    window.location.href = `${host}/search?q=${encodeURIComponent(query)}`;
                 }
             }
         }
@@ -257,10 +229,6 @@
             window.location.href = '/ultra';
         };
 
-        // ボタンの処理
-        document.getElementById('uvproxyButton').onclick = function() {
-            window.location.href = '/ultra';
-        };
         // オープンチャットボタンの処理
         document.getElementById('shadowButton').onclick = function() {
             window.location.href = '/shadow';
