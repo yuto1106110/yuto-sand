@@ -35,6 +35,11 @@ document.getElementById('uvproxyButton').addEventListener('click', function() {
     location.href = "/ultra";
 });
 
+document.getElementById('shadowButton').addEventListener('click', function() {
+    document.cookie = "yuki=True; max-age=31536000; path=/";
+    location.href = "/shadow";
+});
+
 window.onload = function() {
     const cookieAccepted = localStorage.getItem('cookieAccepted');
     if (cookieAccepted !== 'true') {
