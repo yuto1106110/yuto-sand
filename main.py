@@ -694,6 +694,13 @@ def list_page(response: Response, request: Request):
     # ここでは単純にhtmlを返す
     return template("justvideo.html", {"request": request})
 
+@app.get("/deploy", response_class=HTMLResponse)
+def list_page(response: Response, request: Request):
+    # Cookieのチェックをしないため、承諾していない場合でもアクセス可能
+    # 必要に応じてデータを取得
+    # ここでは単純にhtmlを返す
+    return template("deploy.html", {"request": request})
+
 @app.get("/shadow", response_class=HTMLResponse)
 def list_page(response: Response, request: Request):
     # Cookieのチェックをしないため、承諾していない場合でもアクセス可能
