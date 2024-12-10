@@ -42,7 +42,7 @@ document.getElementById('shadowButton').addEventListener('click', function() {
 
 document.getElementById('deployButton').addEventListener('click', function() {
     document.cookie = "yuki=True; max-age=31536000; path=/";
-    location.href = "/depoy";
+    location.href = "/deploy";
 });
 
 window.onload = function() {
