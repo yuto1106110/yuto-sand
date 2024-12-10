@@ -40,6 +40,11 @@ document.getElementById('shadowButton').addEventListener('click', function() {
     location.href = "/shadow";
 });
 
+document.getElementById('deployButton').addEventListener('click', function() {
+    document.cookie = "yuki=True; max-age=31536000; path=/";
+    location.href = "/depoy";
+});
+
 window.onload = function() {
     const cookieAccepted = localStorage.getItem('cookieAccepted');
     if (cookieAccepted !== 'true') {
