@@ -680,18 +680,7 @@ def list_page(response: Response, request: Request):
     # ここでは単純にhtmlを返す
     return template("bye.html", {"request": request})
 
-@app.get("/ultra", response_class=HTMLResponse)
-def ultra_page(response: Response, request: Request):
-    # GitHubのURLからHTMLを取得
-    url = "https://raw.githubusercontent.com/mino-hobby-pro/sand-smoke-proxy/refs/heads/main/index.html"
-    try:
-        # URLからHTMLを取得
-        html_content = requests.get(url).text
-        return HTMLResponse(content=html_content)
-    except Exception as e:
-        print(f"Error fetching the HTML file: {e}")
-        return HTMLResponse(content="Error fetching the content.", status_code=500)
-
+@app.route('/ultra') def serve_index(): return send_from_directory(directory='.', path='index.html') if __name__ == '__main__': app.run(debug=True)
 
 @app.get("/justvideo", response_class=HTMLResponse)
 def list_page(response: Response, request: Request):
