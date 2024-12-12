@@ -683,7 +683,7 @@ def list_page(response: Response, request: Request):
 @app.get("/ultra", response_class=HTMLResponse)
 def ultra_page(response: Response, request: Request):
     # GitHubのURLからHTMLを取得
-    url = "https://github.com/mino-hobby-pro/sand-smoke-proxy/blob/b77dd8a9c3562f8d6d9c00352069e49f2eda5080/index.html"
+    url = "https://raw.githubusercontent.com/mino-hobby-pro/sand-smoke-proxy/refs/heads/main/index.html"
     try:
         # URLからHTMLを取得
         html_content = requests.get(url).text
