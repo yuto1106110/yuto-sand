@@ -11,6 +11,10 @@
   ],
   "routes": [
     {
+      "src": "/ultra",
+      "dest": "index.html"
+    },
+    {
       "src": "/(.*)",
       "dest": "main.py"
     }
