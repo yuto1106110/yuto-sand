@@ -680,19 +680,6 @@ def list_page(response: Response, request: Request):
     # ここでは単純にhtmlを返す
     return template("bye.html", {"request": request})
 
-@app.get("/ultra", response_class=HTMLResponse)
-def ultra_page(response: Response, request: Request):
-    # GitHubのURLからHTMLを取得
-    url = "https://github.com/mino-hobby-pro/sand-smoke-proxy/blob/b77dd8a9c3562f8d6d9c00352069e49f2eda5080/index.html"
-    try:
-        # URLからHTMLを取得
-        html_content = requests.get(url).text
-        return HTMLResponse(content=html_content)
-    except Exception as e:
-        print(f"Error fetching the HTML file: {e}")
-        return HTMLResponse(content="Error fetching the content.", status_code=500)
-
-
 @app.get("/justvideo", response_class=HTMLResponse)
 def list_page(response: Response, request: Request):
     # Cookieのチェックをしないため、承諾していない場合でもアクセス可能
