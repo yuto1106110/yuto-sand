@@ -7,6 +7,13 @@ import random
 import os
 import subprocess
 from cache import cache
+from fastapi import FastAPI, Depends
+from fastapi import Response, Cookie, Request
+from fastapi.responses import HTMLResponse, RedirectResponse as redirect
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.templating import Jinja2Templates
+from typing import Union
 
 
 max_api_wait_time = 8
