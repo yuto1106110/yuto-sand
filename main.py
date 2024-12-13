@@ -543,6 +543,7 @@ from typing import Union
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 app.mount("/css", StaticFiles(directory="./css"), name="static")
 app.mount("/sand", StaticFiles(directory="./blog", html=True), name="static")
+app.mount("/ultra", StaticFiles(directory="./static", html=True), name="static")
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
 from fastapi.templating import Jinja2Templates
@@ -701,12 +702,6 @@ def list_page(response: Response, request: Request):
     # ここでは単純にhtmlを返す
     return template("shadow.html", {"request": request})
 
-@app.get("/ultra", response_class=HTMLResponse)
-def list_page(response: Response, request: Request):
-    # Cookieのチェックをしないため、承諾していない場合でもアクセス可能
-    # 必要に応じてデータを取得
-    # ここでは単純にhtmlを返す
-    return template("main.html", {"request": request})
     
 @app.exception_handler(500)
 def page(request: Request,__):
