@@ -548,12 +548,21 @@ from typing import Union
 
 
 app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
+app.add_middleware(GZipMiddleware, minimum_size=1000)
 app.mount("/css", StaticFiles(directory="./css"), name="static")
 app.mount("/sand", StaticFiles(directory="./blog", html=True), name="static")
-app.add_middleware(GZipMiddleware, minimum_size=1000)
+app.mount("/assets", StaticFiles(directory="./templates/assets"), name="static")
+app.mount("/uv", StaticFiles(directory="./templates/uv"), name="static")
 
-from fastapi.templating import Jinja2Templates
-template = Jinja2Templates(directory='templates').TemplateResponse
+template = Jinja2Templates(directory='templates')
+
+def set_permissions(directory):
+    """指定したディレクトリ内のすべてのファイルに対して権限を設定する"""
+    for root, dirs, files in os.walk(directory):
+        for file in files:
+            file_path = os.path.join(root, file)
+            # 読み取り、書き込み、実行の権限を設定
+            os.chmod(file_path, 0o755)  # 755の権限を設定
 
 
 
