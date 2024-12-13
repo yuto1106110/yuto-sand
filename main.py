@@ -550,7 +550,11 @@ from fastapi.templating import Jinja2Templates
 template = Jinja2Templates(directory='templates').TemplateResponse
 
 
-
+@app.middleware("http")
+async def add_service_worker_header(request: Request, call_next):
+    response = await call_next(request)
+    response.headers["Service-Worker-Allowed"] = "/"
+    return response
 
 
 
