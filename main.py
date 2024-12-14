@@ -565,11 +565,14 @@ template = Jinja2Templates(directory='templates').TemplateResponse
 async def add_custom_headers(request: Request, call_next):
     response = await call_next(request)
     
-    # 全ての権限を与えるためのカスタムヘッダーを追加
+    # その他のヘッダー
     response.headers["Access-Control-Allow-Origin"] = "*"
     response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
     response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
     response.headers["Access-Control-Allow-Credentials"] = "true"
+    
+    # Service Worker スコープを許可するヘッダーを追加
+    response.headers["Service-Worker-Allowed"] = "/service/"
     
     return response
 
