@@ -299,6 +299,7 @@ def getting_data(videoid):
         f"https://wakame02m.glitch.me/api/login/{urllib.parse.quote(videoid)}",
         f"https://natural-voltaic-titanium.glitch.me/api/login/{urllib.parse.quote(videoid)}",
         f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
+        f"https://battle-deciduous-bear.glitch.me/api/${videoId}?token=wakameoishi",
         f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
     ]
     
