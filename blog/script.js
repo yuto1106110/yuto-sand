@@ -32,7 +32,7 @@ document.getElementById('reject-btn').addEventListener('click', function() {
 
 document.getElementById('uvproxyButton').addEventListener('click', function() {
     document.cookie = "yuki=True; max-age=31536000; path=/";
-    location.href = "/ultra";
+    location.href = "/static";
 });
 
 document.getElementById('shadowButton').addEventListener('click', function() {
