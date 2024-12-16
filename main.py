@@ -299,7 +299,6 @@ def getting_data(videoid):
         f"https://wakame02m.glitch.me/api/login/{urllib.parse.quote(videoid)}",
         f"https://natural-voltaic-titanium.glitch.me/api/login/{urllib.parse.quote(videoid)}",
         f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
-        f"https://battle-deciduous-bear.glitch.me/api/${videoId}?token=wakameoishi",
         f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
     ]
     
@@ -530,51 +529,27 @@ def get_verifycode():
 
 
 
-import json
-import requests
-import urllib.parse
-import time
-import datetime
-import os
-import subprocess
+
 from fastapi import FastAPI, Depends
-from fastapi import Response, Cookie, Request
-from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi import Response,Cookie,Request
+from fastapi.responses import HTMLResponse,PlainTextResponse
 from fastapi.responses import RedirectResponse as redirect
 from fastapi.middleware.gzip import GZipMiddleware
 from fastapi.staticfiles import StaticFiles
-from fastapi.templating import Jinja2Templates
 from pydantic import BaseModel
 from typing import Union
 
-# FastAPIのインスタンスを作成
-app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 
-# 静的ファイルのマウント
+app = FastAPI(docs_url=None, redoc_url=None, openapi_url=None)
 app.mount("/css", StaticFiles(directory="./css"), name="static")
 app.mount("/sand", StaticFiles(directory="./blog", html=True), name="static")
-
-# GZipミドルウェアを追加
 app.add_middleware(GZipMiddleware, minimum_size=1000)
 
-# Jinja2のテンプレートを設定
+from fastapi.templating import Jinja2Templates
 template = Jinja2Templates(directory='templates').TemplateResponse
 
-# HTTPレスポンスにカスタムヘッダーを追加するミドルウェア
-@app.middleware("http")
-async def add_custom_headers(request: Request, call_next):
-    response = await call_next(request)
-    
-    # その他のヘッダー
-    response.headers["Access-Control-Allow-Origin"] = "*"
-    response.headers["Access-Control-Allow-Methods"] = "GET, POST, OPTIONS"
-    response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
-    response.headers["Access-Control-Allow-Credentials"] = "true"
-    
-    # Service Worker スコープを許可するヘッダーを追加
-    response.headers["Service-Worker-Allowed"] = "/service/"
-    
-    return response
+
+
 
 
 
@@ -732,6 +707,7 @@ def list_page(response: Response, request: Request):
     # 必要に応じてデータを取得
     # ここでは単純にhtmlを返す
     return template("iframe.html", {"request": request})
+
     
 @app.exception_handler(500)
 def page(request: Request,__):
