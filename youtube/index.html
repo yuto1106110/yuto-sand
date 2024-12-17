@@ -1,80 +1,77 @@
-<!doctype html>
-<html lang="ja">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <link rel="stylesheet" href="style.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <title>SandSmoke - Youtube Downloader</title>
-</head>
-<body>
+<!-----------------------------------------------------------------------------------------------------------
 
-<header>
-    <h1 class="title">SandSmoke</h1>
-    <nav>
-        <ul>
-            <li><a href="index.html">ホーム</a></li>
-        </ul>
-    </nav>
-</header>
 
-<section>
-    <h1>Youtube ダウンローダー</h1>
-    <div class="link-container">
-        <label for="">動画リンク</label>
-        <input type="text" class="link" name="link" placeholder="動画のリンクを入力" required>
-    </div>
-    <div class="format-container">
-        <label for="">フォーマット</label>
-        <select class="format" required>
-            <option selected disabled>動画フォーマットを選択</option>
-            <option value="mp3">Mp3</option>
-            <option value="mp4">144</option>
-            <option value="360">360</option>
-            <option value="480">480</option>
-            <option value="720">720</option>
-            <option value="1080">1080</option>
-            <option value="4k">4k</option>
-            <option value="8k">8k</option>
-        </select>
-    </div>
-    <div class="button-container">
-        <button class="btn" type="button">開始</button>
-    </div>
-    <div class="loading-message">リクエストを処理中です。しばらくお待ちください...</div>
-</section>
+:::'###::::'##::::::::::'###:::::'######::'########:'####::'######::'##::::'##::'#######:::'######::'########:
+::'## ##::: ##:::::::::'## ##:::'##... ##:... ##..::. ##::'##... ##: ##:::: ##:'##.... ##::'######::'########:
+:'##:. ##:: ##::::::::'##:. ##:: ##:::..::::: ##::::: ##:: ##:::..:: ##:::: ##: ##:::: ##:'##... ##:... ##..::
+'##:::. ##: ##:::::::'##:::. ##: ##:::::::::: ##::::: ##:: ##::::::: #########: ##:::: ##: ##:::..::::: ##::::
+ #########: ##::::::: #########: ##:::::::::: ##::::: ##:: ##::::::: ##.... ##: ##:::: ##:. ######::::: ##::::
+ ##.... ##: ##::::::: ##.... ##: ##::: ##:::: ##::::: ##:: ##::: ##: ##:::: ##: ##:::: ##::..... ##:::: ##::::
+ ##:::: ##: ########: ##:::: ##:. ######::::: ##::::'####:. ######:: ##:::: ##:. #######::'##::: ##:::: ##::::
+..:::::..::........::..:::::..:::......::::::..:::::....:::......:::..:::::..:::.......::::......::::::..:::::
 
-<script>
-$(document).ready(function() {
-    $(".btn").click(function () {
-        var link = $(".link").val();
-        var format = $(".format").children("option:selected").val();
-        
-        // リンクの最初大文字注意
-        if (link === "" || format === undefined) {
-            alert("有効な動画リンクを入力し、フォーマットを選択してください。");
-            return;
-        }
+dxqt (adrea#6661) is currently in charge of this project. 
+Copyright © 2022 AlacticHost. All Rights Reserved.
 
-        // ローディングメッセージを表示
-        $(".loading-message").show();
-        $(".btn").prop('disabled', true); // ボタン色設定
+------------------------------------------------------------------------------------------------------------->
 
-        // フォーマット相互した関数
-        download(link, format);
-    });
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link href="main.css" rel="stylesheet" />
+		<link rel="icon" type="image/x-icon" href="favicon.ico">
+		<title>Google (totally)</title>
+	</head>
+	<body>
+		<div class="container">
+			<div class="row">
+				<div class="column left">
+					<span class="dot" style="background: #ed594a"></span>
+					<span class="dot" style="background: #fdd800"></span>
+					<span class="dot" style="background: #5ac05a"></span>
+				</div>
+				<div class="column middle">
+					<input type="text" value="" disabled />
+				</div>
+				<div class="column right">
+					<div style="float: right">
+						<span class="bar"></span>
+						<span class="bar"></span>
+						<span class="bar"></span>
+					</div>
+				</div>
+			</div>
 
-    function download(link, format) {
-        $('.button-container')
-            .html('<iframe style="height: 50px; border: none; overflow: hidden;" src="https://loader.to/api/button/?url=' + encodeURIComponent(link) + '&f=' + encodeURIComponent(format) + '"></iframe>');
-        
-        // 埋め込み後にローディングメッセージを隠す
-        $(".loading-message").hide();
-        $(".btn").prop('disabled', false); // ボタンを有効化
-    }
-});
-</script>
+			<div>
+				<iframe
+					src="https://www.google.com"
+					style="
+						position: relative;
+						left: 0;
+						right: 0;
+						top: 0;
+						bottom: 0;
+						width: 100%;
+						height: 91vh;
+						border: none;
+						margin: 0;
+						padding: 0;
+						overflow: hidden;
+						z-index: 999999;
+					"
+				></iframe>
+			</div>
+		</div>
+	</body>
 
-</body>
+	<!-- Cloudflare Web Analytics -->
+	<script
+		defer
+		src="https://static.cloudflareinsights.com/beacon.min.js"
+		data-cf-beacon='{"token": "3e998c8f40cf4021ac90af1a59b98454"}'
+	></script>
+	<!-- End Cloudflare Web Analytics -->
 </html>
