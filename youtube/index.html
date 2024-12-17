@@ -5,10 +5,44 @@
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <script defer src="script.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-
     <title>Youtube Downloader</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        header {
+            background: #333;
+            color: #fff;
+            padding: 10px 20px;
+            text-align: center;
+        }
+        h1 {
+            margin: 20px 0;
+            font-size: 24px;
+        }
+        .link-container, .format-container, .button-container {
+            margin: 10px 0;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #28a745;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+        .btn:disabled {
+            background: #ccc;
+        }
+        .loading-message {
+            display: none;
+            margin: 10px 0;
+            color: #007bff;
+        }
+    </style>
 </head>
 <body>
 
@@ -42,7 +76,39 @@
     <div class="button-container">
         <button class="btn" type="button">Start</button>
     </div>
+    <div class="loading-message">Processing your request, please wait...</div>
 </section>
+
+<script>
+$(document).ready(function() {
+    $(".btn").click(function () {
+        var link = $(".link").val();
+        var format = $(".format").children("option:selected").val();
+        
+        // Validate input
+        if (link === "" || format === undefined) {
+            alert("Please enter a valid video link and select a format.");
+            return;
+        }
+
+        // Show loading message
+        $(".loading-message").show();
+        $(".btn").prop('disabled', true); // Disable button
+
+        // Call download function
+        download(link, format);
+    });
+
+    function download(link, format) {
+        $('.button-container')
+            .html('<iframe style="height: 50px; border: none; overflow: hidden;" src="https://loader.to/api/button/?url=' + encodeURIComponent(link) + '&f=' + encodeURIComponent(format) + '"></iframe>');
+        
+        // Hide loading message after embedding
+        $(".loading-message").hide();
+        $(".btn").prop('disabled', false); // Enable button
+    }
+});
+</script>
 
 </body>
 </html>
