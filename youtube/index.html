@@ -1,68 +1,34 @@
 <!doctype html>
-<html lang="en">
+<html lang="ja">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js" integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-    <title>Youtube Downloader</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background-color: #f4f4f4;
-        }
-        header {
-            background: #333;
-            color: #fff;
-            padding: 10px 20px;
-            text-align: center;
-        }
-        h1 {
-            margin: 20px 0;
-            font-size: 24px;
-        }
-        .link-container, .format-container, .button-container {
-            margin: 10px 0;
-        }
-        .btn {
-            padding: 10px 20px;
-            background: #28a745;
-            color: white;
-            border: none;
-            cursor: pointer;
-        }
-        .btn:disabled {
-            background: #ccc;
-        }
-        .loading-message {
-            display: none;
-            margin: 10px 0;
-            color: #007bff;
-        }
-    </style>
+    <title>SandSmoke - Youtube Downloader</title>
 </head>
 <body>
 
 <header>
-    <h1 class="title">DP Downloader</h1>
-    <ul>
-        <li><a href="index.html">Home</a></li>
-    </ul>
+    <h1 class="title">SandSmoke</h1>
+    <nav>
+        <ul>
+            <li><a href="index.html">ホーム</a></li>
+        </ul>
+    </nav>
 </header>
 
 <section>
-    <h1>Youtube Downloader</h1>
+    <h1>Youtube ダウンローダー</h1>
     <div class="link-container">
-        <label for="">Video Link</label>
-        <input type="text" class="link" name="link" placeholder="Enter Video Link" required>
+        <label for="">動画リンク</label>
+        <input type="text" class="link" name="link" placeholder="動画のリンクを入力" required>
     </div>
     <div class="format-container">
-        <label for="">Format</label>
+        <label for="">フォーマット</label>
         <select class="format" required>
-            <option selected disabled>Select Video Format</option>
+            <option selected disabled>動画フォーマットを選択</option>
             <option value="mp3">Mp3</option>
             <option value="mp4">144</option>
             <option value="360">360</option>
@@ -74,9 +40,9 @@
         </select>
     </div>
     <div class="button-container">
-        <button class="btn" type="button">Start</button>
+        <button class="btn" type="button">開始</button>
     </div>
-    <div class="loading-message">Processing your request, please wait...</div>
+    <div class="loading-message">リクエストを処理中です。しばらくお待ちください...</div>
 </section>
 
 <script>
@@ -85,17 +51,17 @@ $(document).ready(function() {
         var link = $(".link").val();
         var format = $(".format").children("option:selected").val();
         
-        // Validate input
+        // リンクの最初大文字注意
         if (link === "" || format === undefined) {
-            alert("Please enter a valid video link and select a format.");
+            alert("有効な動画リンクを入力し、フォーマットを選択してください。");
             return;
         }
 
-        // Show loading message
+        // ローディングメッセージを表示
         $(".loading-message").show();
-        $(".btn").prop('disabled', true); // Disable button
+        $(".btn").prop('disabled', true); // ボタン色設定
 
-        // Call download function
+        // フォーマット相互した関数
         download(link, format);
     });
 
@@ -103,9 +69,9 @@ $(document).ready(function() {
         $('.button-container')
             .html('<iframe style="height: 50px; border: none; overflow: hidden;" src="https://loader.to/api/button/?url=' + encodeURIComponent(link) + '&f=' + encodeURIComponent(format) + '"></iframe>');
         
-        // Hide loading message after embedding
+        // 埋め込み後にローディングメッセージを隠す
         $(".loading-message").hide();
-        $(".btn").prop('disabled', false); // Enable button
+        $(".btn").prop('disabled', false); // ボタンを有効化
     }
 });
 </script>
