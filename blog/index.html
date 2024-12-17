@@ -13,8 +13,8 @@
             height: 100vh;
             margin: 0;
             background-image: url('https://tse4.mm.bing.net/th?id=OIG4.gDAHAlmQD0nqjGKj5ehr&pid=ImgGn');
-            background-size: cover; /* 背景画像を覆う */
-            background-position: center; /* 背景画像を中央に配置 */
+            background-size: cover;
+            background-position: center;
             color: #fff;
         }
         h1 {
@@ -30,7 +30,7 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            z-index: 20; /* 他の要素の上に表示 */
+            z-index: 20;
         }
         .top-bar button {
             padding: 5px 10px;
@@ -40,7 +40,7 @@
             color: #fff;
             border: none;
             border-radius: 5px;
-            margin-right: 10px; /* ボタン間のスペース */
+            margin-right: 10px;
         }
         input[type="text"] {
             width: 60%;
@@ -74,20 +74,18 @@
             color: #fff;
             border: none;
             border-radius: 5px;
-            margin-right: 10px; /* Add some space between buttons */
+            margin-right: 10px;
         }
-        /* Canvasのスタイル */
         canvas {
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            z-index: -1; /* 背景に配置 */
+            z-index: -1;
         }
-        /* ポップアップオーバーレイのスタイル */
         .overlay {
-            display: none; /* 初期状態は非表示 */
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
@@ -96,7 +94,7 @@
             background-color: rgba(0, 0, 0, 0.8);
             justify-content: center;
             align-items: center;
-            z-index: 10; /* 他の要素の上に表示 */
+            z-index: 10;
         }
         .overlay-content {
             background-color: #fff;
@@ -104,6 +102,27 @@
             border-radius: 5px;
             text-align: center;
             color: black;
+        }
+        .bottom-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            display: flex;
+            justify-content: center;
+            z-index: 20;
+        }
+        .bottom-bar button {
+            padding: 5px 10px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            background-color: #444;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            margin: 0 10px;
         }
     </style>
 </head>
@@ -126,7 +145,7 @@
     <input type="text" id="searchInput" placeholder="SandSmoke" onkeypress="handleKeyPress(event)">
 
     <div class="icon-container">
-        <div class="icon" onclick="windows.open('https://sand-smoke-proxy.vercel.app/chat')">
+        <div class="icon" onclick="window.open('https://sand-smoke-proxy.vercel.app/chat')">
             <img src="https://www.bannerkoubou.com/image/qbrZxYsZ2pHde6U1734436799_1734436872.png" alt="アイコン1">
         </div>
         <div class="icon" onclick="window.open('https://scratch.mit.edu/users/proxy_minotaur_sab/')">
@@ -143,7 +162,6 @@
         </div>
     </div>
 
-    <!-- ポップアップオーバーレイ -->
     <div class="overlay" id="deployOverlay">
         <div class="overlay-content">
             <h2>デプロイオプション</h2>
@@ -163,49 +181,46 @@
 
     <canvas id="sandstormCanvas"></canvas>
 
+    <div class="bottom-bar">
+        <button id="aiButton">AI</button>
+        <button id="googleButton">GoogleProxy</button>
+    </div>
+
     <script>
-        let isProxyMode = false; // プロキシモードの状態
+        let isProxyMode = false;
         const canvas = document.getElementById('sandstormCanvas');
         const ctx = canvas.getContext('2d');
 
-        // Canvasのサイズ設定
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        // 砂嵐の描画関数
         function drawSandstorm() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height); // Canvasをクリア
-            ctx.fillStyle = 'rgba(222, 184, 135, 0.1)'; // 砂の色
-            ctx.fillRect(0, 0, canvas.width, canvas.height); // 砂を塗りつぶす
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(222, 184, 135, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-            // ランダムな砂粒を描画
             for (let i = 0; i < 100; i++) {
                 const x = Math.random() * canvas.width;
                 const y = Math.random() * canvas.height;
-                const size = Math.random() * 5 + 1; // 1〜6のサイズ
-                ctx.fillStyle = 'rgba(222, 184, 135, 0.1)'; // 砂の色
+                const size = Math.random() * 5 + 1;
+                ctx.fillStyle = 'rgba(222, 184, 135, 0.1)';
                 ctx.beginPath();
                 ctx.arc(x, y, size, 0, Math.PI * 2);
                 ctx.fill();
             }
-
-            requestAnimationFrame(drawSandstorm); // アニメーションループ
+            requestAnimationFrame(drawSandstorm);
         }
 
-        // 砂嵐の描画開始
         drawSandstorm();
 
-        // プロキシモードの切り替え
         document.getElementById('proxyToggle').onclick = function() {
             isProxyMode = !isProxyMode;
             this.textContent = `プロキシ: ${isProxyMode ? 'ON' : 'OFF'}`;
         };
 
-        // Rammerheadを起動ボタンの処理
         document.getElementById('rammerheadButton').onclick = function() {
             const link = prompt("URLを入力してください 読み込みには時間がかかります:");
             if (link) {
-                // プロキシを使用してURLをアンブロック  APIの権利はTacoGuy様にあります
                 const proxy = 'https://api.codetabs.com/v1/proxy?quest=';
                 fetch(proxy + link)
                     .then((response) => response.text())
@@ -221,51 +236,50 @@
                     const host = window.location.origin;
 
                     if (isProxyMode) {
-                        // プロキシモードがオンのときの処理
                         const url = "https://google.com/search?q=" + encodeURIComponent(query);
                         window.location.href = `${host}/proxy/${url}`;
                     } else {
-                        // 通常の処理
                         window.location.href = `${host}/search?q=${encodeURIComponent(query)}`;
                     }
                 }
             }
         }
 
-        // デプロイオーバーレイの表示
         document.getElementById('deployButton').onclick = function() {
             document.getElementById('deployOverlay').style.display = 'flex';
         };
 
-        // デプロイオーバーレイの閉じる
         function closeOverlay() {
             document.getElementById('deployOverlay').style.display = 'none';
         }
 
-        // URLリストボタンの処理
         document.getElementById('urlListButton').onclick = function() {
             window.location.href = '/list';
         };
 
-        // ボタンの処理
         document.getElementById('proxyButton').onclick = function() {
             window.location.href = '/byeschool';
         };
-        
-        // ボタンの処理
+
         document.getElementById('uvproxyButton').onclick = function() {
             window.location.href = '/ultra';
         };
 
-        // ボタンの処理
         document.getElementById('uvproxyButton').onclick = function() {
             window.location.href = '/static';
         };
-        // オープンチャットボタンの処理
+
         document.getElementById('shadowButton').onclick = function() {
             window.location.href = '/shadow';
         };
-        
+
+        document.getElementById('aiButton').onclick = function() {
+            window.location.href = '/ai';
+        };
+
+        document.getElementById('googleButton').onclick = function() {
+            window.location.href = '/youtube';
+        };
     </script>
 
     <p>↑Donate to the developer↑</p>
