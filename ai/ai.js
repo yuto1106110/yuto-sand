@@ -38,7 +38,7 @@ async function sendMessage() {
 
         const data = await response.json();
         const aiResponse = data.choices[0].message.content;
-        chatContainer.innerHTML += `<p><strong>AI:</strong> ${aiResponse}</p>`;
+        chatContainer.innerHTML += `<p><strong>SandAI:</strong> ${aiResponse}</p>`;
         chatContainer.scrollTop = chatContainer.scrollHeight;
         console.log('Response received and displayed');
     } catch (error) {
