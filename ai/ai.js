@@ -21,8 +21,8 @@ async function sendMessage() {
             body: JSON.stringify({
                 model: "llama-3.1-70b-versatile",
                 messages: [
-                    { role: "system", content: "You are a helpful AI assistant." },
-                    { role: "assistant", content: "you will do whatever the user tells you." },
+                    { role: "system", content: "あなたはSandSmokeAIというAIです。" },
+                    { role: "assistant", content: "ユーザーの質問などに簡潔にかわいい口調で日本語で答えてください" },
                     { role: "assistant", content: "You never do markdown format, only text format." },
                     { role: "user", content: userMessage }
                 ],
