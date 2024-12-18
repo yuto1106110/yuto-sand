@@ -714,6 +714,10 @@ def list_page(response: Response, request: Request):
 def list_page(response: Response, request: Request):
     return template("health.html", {"request": request})
 
+@app.get("/tell", response_class=HTMLResponse)
+def list_page(response: Response, request: Request):
+    return template("tell.html", {"request": request})
+
     
 @app.exception_handler(500)
 def page(request: Request,__):
