@@ -137,7 +137,7 @@
         <button class="deploy-button" id="deployButton">デプロイ</button>
     </div>
 
-    <h1>SandSmoke V1.2</h1>
+    <h1>SandSmoke V1.5</h1>
 
     <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
     <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
@@ -146,7 +146,7 @@
 
     <div class="icon-container">
         <div class="icon" onclick="window.open('https://sand-smoke-proxy.vercel.app/chat')">
-            <img src="https://gitlab.com/mino3325151/sandsmoke/-/raw/master/qbrZxYsZ2pHde6U1734436799_1734436872.png" alt="アイコン1">
+            <img src="https://f.yourl.jp/9eb9b2f0/" alt="アイコン1">
         </div>
         <div class="icon" onclick="window.open('https://scratch.mit.edu/users/proxy_minotaur_sab/')">
             <img src="https://msp.c.yimg.jp/images/v2/FUTi93tXq405grZVGgDqG-UPEpGiUmLUvyTKINe5lrNdRrjsrxgVfr6wDMN0CLStbOKDqIoK81ZNmgvECDtOsdoWq87mx26qcpoQ1Pyrkl-_YPIH2YqrFYEDm9aR47DL4Vcar6RZDjaWvdw-zxvVnPF9U3e9_-UBuNrgEtdaPyygeyyNMzUFMat_WeATdfpD/919846.png?errorImage=false" alt="アイコン2">
@@ -182,8 +182,10 @@
     <canvas id="sandstormCanvas"></canvas>
 
     <div class="bottom-bar">
-        <button id="aiButton">AI</button>
-        <button id="googleButton">GoogleProxy</button>
+        <button id="aiButton">SandSmokeAI-SSAちゃん！</button>
+        <button id="googleButton">おすすめ最強GoogleProxy</button>
+        <button id="healthButton">設定　health</button>
+        <button id="tellButton">運営からのお知らせ</button>
     </div>
 
     <script>
@@ -275,6 +277,14 @@
 
         document.getElementById('aiButton').onclick = function() {
             window.location.href = '/ai';
+        };
+
+         document.getElementById('healthButton').onclick = function() {
+            window.location.href = '/health';
+        };
+
+        document.getElementById('tellButton').onclick = function() {
+            window.location.href = '/tell';
         };
 
         document.getElementById('googleButton').onclick = function() {
