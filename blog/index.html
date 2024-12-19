@@ -42,19 +42,6 @@
             border-radius: 5px;
             margin-right: 10px;
         }
-        .counter-card {
-            position: fixed;
-            top: 80px; /* 初期値重 */
-            right: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            color: black;
-            padding: 15px;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
-            z-index: 30;
-            width: 200px;
-            cursor: move;
-        }
         input[type="text"] {
             width: 60%;
             padding: 10px;
@@ -138,67 +125,6 @@
             margin: 0 10px;
         }
     </style>
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
-        import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
-
-        const firebaseConfig = {
-            apiKey: "AIzaSyCFtCV9OP-oJqrzVaTqvuRkLD4GW2Hhhc0",
-            authDomain: "sandsmoke-79dca.firebaseapp.com",
-            databaseURL: "https://sandsmoke-79dca-default-rtdb.firebaseio.com",
-            projectId: "sandsmoke-79dca",
-            storageBucket: "sandsmoke-79dca.firebasestorage.app",
-            messagingSenderId: "61141711489",
-            appId: "1:61141711489:web:a1d074c6f9e6a3ecd26b80",
-            measurementId: "G-C8FH5PFNEP"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const database = getDatabase(app);
-
-        const today = new Date().toISOString().split('T')[0];
-        const counterRef = ref(database, `accessCount/${today}`);
-        const totalCountRef = ref(database, 'accessCount/totalCount');
-
-        function incrementAccessCount() {
-            get(counterRef).then((snapshot) => {
-                let currentCount = snapshot.exists() ? snapshot.val().count : 0;
-                currentCount++;
-
-                set(counterRef, { count: currentCount }).then(() => {
-                    displayAccessCount(currentCount);
-                }).catch((error) => {
-                    console.error('データの書き込みに失敗しました:', error);
-                });
-
-                get(totalCountRef).then((totalSnapshot) => {
-                    let totalCount = totalSnapshot.exists() ? totalSnapshot.val().count : 0;
-                    totalCount++;
-
-                    set(totalCountRef, { count: totalCount }).then(() => {
-                        displayTotalCount(totalCount);
-                    }).catch((error) => {
-                        console.error('総アクセス数の書き込みに失敗しました:', error);
-                    });
-                }).catch((error) => {
-                    console.error('総アクセス数の取得に失敗しました:', error);
-                });
-            }).catch((error) => {
-                console.error('データの取得に失敗しました:', error);
-            });
-        }
-
-        function displayAccessCount(count) {
-            document.getElementById('todayAccessCount').textContent = `今日のアクセス数: ${count}`;
-        }
-
-        function displayTotalCount(count) {
-            document.getElementById('totalAccessCount').textContent = `総アクセス数: ${count}`;
-        }
-
-        window.onload = incrementAccessCount;
-
-    </script>
 </head>
 <body>
 
@@ -260,11 +186,6 @@
         <button id="googleButton">おすすめ最強GoogleProxy</button>
         <button id="healthButton">設定　health</button>
         <button id="tellButton">運営からのお知らせ</button>
-    </div>
-
-    <div class="counter-card" id="counterCard">
-        <div id="todayAccessCount">今日のアクセス数: 0</div>
-        <div id="totalAccessCount">総アクセス数: 0</div>
     </div>
 
     <script>
@@ -346,6 +267,10 @@
             window.location.href = '/ultra';
         };
 
+        document.getElementById('uvproxyButton').onclick = function() {
+            window.location.href = '/static';
+        };
+
         document.getElementById('shadowButton').onclick = function() {
             window.location.href = '/shadow';
         };
@@ -354,7 +279,7 @@
             window.location.href = '/ai';
         };
 
-        document.getElementById('healthButton').onclick = function() {
+         document.getElementById('healthButton').onclick = function() {
             window.location.href = '/health';
         };
 
@@ -365,28 +290,6 @@
         document.getElementById('googleButton').onclick = function() {
             window.location.href = '/youtube';
         };
-
-        const counterCard = document.getElementById('counterCard');
-        let offsetX, offsetY;
-
-        counterCard.addEventListener('mousedown', function(e) {
-            offsetX = e.clientX - counterCard.getBoundingClientRect().left;
-            offsetY = e.clientY - counterCard.getBoundingClientRect().top;
-            document.addEventListener('mousemove', mouseMoveHandler);
-            document.addEventListener('mouseup', mouseUpHandler);
-        });
-
-        function mouseMoveHandler(e) {
-            counterCard.style.left = (e.clientX - offsetX) + 'px';
-            counterCard.style.top = (e.clientY - offsetY) + 'px';
-        }
-
-        function mouseUpHandler() {
-            document.removeEventListener('mousemove', mouseMoveHandler);
-            document.removeEventListener('mouseup', mouseUpHandler);
-        }
-
-        counterCard.style.position = 'fixed';
     </script>
 
     <p>↑Donate to the developer↑</p>
@@ -396,5 +299,6 @@
         <button id="accept-btn" onclick="acceptCookies()">同意する</button>
         <button id="reject-btn" onclick="rejectCookies()">拒否する</button>
     </div>
+    <script src="script.js"></script>
 </body>
 </html>
