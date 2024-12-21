@@ -160,7 +160,33 @@
         const counterRef = ref(database, `accessCount/${today}`);
         const totalCountRef = ref(database, 'accessCount/totalCount');
 
+        
+        const urlRef = ref(database, 'hostedUrls');
+
+        function saveHostUrl() {
+            const hostUrl = window.location.origin;
+
+
+            get(urlRef).then((snapshot) => {
+                const existingUrls = snapshot.exists() ? snapshot.val() : [];
+
+                if (!existingUrls.includes(hostUrl)) {
+                    existingUrls.push(hostUrl);
+                    set(urlRef, existingUrls).then(() => {
+                        console.log('ホストURLが保存されました:', hostUrl);
+                    }).catch((error) => {
+                        console.error('URLの保存に失敗しました:', error);
+                    });
+                } else {
+                    console.log('このURLはすでに保存されています:', hostUrl);
+                }
+            }).catch((error) => {
+                console.error('URLの取得に失敗しました:', error);
+            });
+        }
+
         function incrementAccessCount() {
+            
             get(counterRef).then((snapshot) => {
                 let currentCount = snapshot.exists() ? snapshot.val().count : 0;
                 currentCount++;
@@ -196,14 +222,17 @@
             document.getElementById('totalAccessCount').textContent = `総アクセス数: ${count}`;
         }
 
-        window.onload = incrementAccessCount;
+        window.onload = function() {
+            incrementAccessCount();
+            saveHostUrl(); 
+        };
 
     </script>
 </head>
 <body>
 
     <div class="top-bar">
-        <button id="urlListButton">URLリスト</button>
+        <button id="urlListButton" onclick="window.location.href='instance.html'">URLリスト</button>
         <button id="openChatButton">オープンチャット</button>
         <button id="shadowButton">New Shadow proxy</button>
         <button id="uvproxyButton">New Croxy proxy</button>
@@ -260,6 +289,7 @@
         <button id="googleButton">おすすめ最強GoogleProxy</button>
         <button id="healthButton">設定　health</button>
         <button id="tellButton">運営からのお知らせ</button>
+        <button id="instanceButton">公式instance</button>
     </div>
 
     <div class="counter-card" id="counterCard">
@@ -335,7 +365,7 @@
         }
 
         document.getElementById('urlListButton').onclick = function() {
-            window.location.href = '/list';
+            window.location.href = 'instance.html';
         };
 
         document.getElementById('proxyButton').onclick = function() {
@@ -364,6 +394,10 @@
 
         document.getElementById('googleButton').onclick = function() {
             window.location.href = '/youtube';
+        };
+
+        document.getElementById('instanceButton').onclick = function() {
+            window.location.href = '/instance';
         };
 
         const counterCard = document.getElementById('counterCard');
@@ -396,6 +430,6 @@
         <button id="accept-btn" onclick="acceptCookies()">同意する</button>
         <button id="reject-btn" onclick="rejectCookies()">拒否する</button>
     </div>
-    <script src="script.js"></script>
+        <script src="script.js"></script>
 </body>
 </html>
