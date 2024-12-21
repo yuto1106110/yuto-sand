@@ -82,8 +82,14 @@
         function checkUrlHealth(url) {
             return new Promise((resolve) => {
                 const startTime = performance.now();
-                fetch(url)
+                const controller = new AbortController();
+                const timeoutId = setTimeout(() => {
+                    controller.abort(); 
+                }, 4000);
+
+                fetch(url, { signal: controller.signal })
                     .then(response => {
+                        clearTimeout(timeoutId);
                         const endTime = performance.now();
                         const duration = endTime - startTime;
                         if (response.ok) {
@@ -93,15 +99,16 @@
                         }
                     })
                     .catch(error => {
+                        clearTimeout(timeoutId);
                         const endTime = performance.now();
                         const duration = endTime - startTime;
-                        resolve({ status: 'OK', duration: duration });
+                        resolve({ status: 'Error', duration: duration, message: error.message });
                     });
             });
         }
 
         function getRecommendationStars(duration) {
-            const maxResponseTime = 2000;
+            const maxResponseTime = 4000; 
             const healthPercentage = Math.max(0, Math.min(100, (maxResponseTime - duration) / maxResponseTime * 100));
             const rating = Math.ceil(healthPercentage / 20);
             
@@ -127,6 +134,18 @@
                         });
                     });
 
+                    promises.forEach(promise => {
+                        promise.then(({ url, result, stars }) => {
+                            const li = document.createElement('li');
+                            const statusText = result.status === 'OK' ? 
+                                `健康状態: 処理時間 (${result.duration.toFixed(2)}ms)` :
+                                `エラー: ${result.message} - 処理時間 (${result.duration.toFixed(2)}ms)`; 
+
+                            li.innerHTML = `<a href="${url}" target="_blank">${url}</a> <span class="health-status">${statusText}</span> <span class="recommendation">${stars}</span>`;
+                            ul.appendChild(li);
+                        });
+                    });
+
                     Promise.all(promises).then(results => {
                         results.sort((a, b) => {
                             const aRating = a.stars.replace(/[^★]/g, '').length;
@@ -134,11 +153,13 @@
                             return bRating - aRating;
                         });
 
+                        ul.innerHTML = ''; 
                         results.forEach(({ url, result, stars }) => {
                             const li = document.createElement('li');
                             const statusText = result.status === 'OK' ? 
                                 `健康状態: 処理時間 (${result.duration.toFixed(2)}ms)` :
-                                `エラー: ${result.message} - 処理時間 (${result.duration.toFixed(2)}ms)`;
+                                `エラー: ${result.message} - 処理時間 (${result.duration.toFixed(2)}ms)`; 
+
                             li.innerHTML = `<a href="${url}" target="_blank">${url}</a> <span class="health-status">${statusText}</span> <span class="recommendation">${stars}</span>`;
                             ul.appendChild(li);
                         });
