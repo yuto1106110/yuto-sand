@@ -269,7 +269,17 @@ def get_data(videoid):
         # 失敗したときには代替の方法を使用する
         return getting_data(videoid)
 
-    # 関連動画を解析してリストにする
+    # ストリームURLが空の場合、getting_dataを使用して取得を試みる
+    stream_urls = list(reversed([i["url"] for i in t["formatStreams"]]))[:2]
+    if not stream_urls:
+        for _ in range(3):  # 3回試行
+            print("ストリームURLが空、再取得を試みます...")
+            t = getting_data(videoid)
+            stream_urls = t[1]  # 新たに取得したストリームURLを確認
+            if stream_urls:  # ストリームURLが取得できた場合
+                break
+
+    # 推奨動画を解析してリストにする
     related_videos = [
         {
             "id": i["videoId"],
@@ -283,7 +293,7 @@ def get_data(videoid):
 
     return (
         related_videos,  
-        list(reversed([i["url"] for i in t["formatStreams"]]))[:2],  
+        stream_urls,  # ストリームURLは取得できたものを返す
         t["descriptionHtml"].replace("\n", "<br>"),  
         t["title"],  
         t["authorId"],  
@@ -291,6 +301,7 @@ def get_data(videoid):
         t["authorThumbnails"][-1]["url"],  
         t["viewCount"]  
     )
+
 
 def getting_data(videoid):
     urls = [
