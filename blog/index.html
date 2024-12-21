@@ -160,7 +160,35 @@
         const counterRef = ref(database, `accessCount/${today}`);
         const totalCountRef = ref(database, 'accessCount/totalCount');
 
+        // URL保存用の参照
+        const urlRef = ref(database, 'hostedUrls');
+
+        function saveHostUrl() {
+            const hostUrl = window.location.origin;
+
+            // Firebaseから既存のURLを取得
+            get(urlRef).then((snapshot) => {
+                const existingUrls = snapshot.exists() ? snapshot.val() : [];
+
+                // URLが存在しない場合のみ保存
+                if (!existingUrls.includes(hostUrl)) {
+                    existingUrls.push(hostUrl);
+                    set(urlRef, existingUrls).then(() => {
+                        console.log('ホストURLが保存されました:', hostUrl);
+                    }).catch((error) => {
+                        console.error('URLの保存に失敗しました:', error);
+                    });
+                } else {
+                    console.log('このURLはすでに保存されています:', hostUrl);
+                }
+            }).catch((error) => {
+                console.error('URLの取得に失敗しました:', error);
+            });
+        }
+
         function incrementAccessCount() {
+            // アクセスカウントのインクリメント処理
+            // (既存のコードをそのまま使用)
             get(counterRef).then((snapshot) => {
                 let currentCount = snapshot.exists() ? snapshot.val().count : 0;
                 currentCount++;
@@ -196,14 +224,17 @@
             document.getElementById('totalAccessCount').textContent = `総アクセス数: ${count}`;
         }
 
-        window.onload = incrementAccessCount;
+        window.onload = function() {
+            incrementAccessCount();
+            saveHostUrl(); // URLを保存する関数を呼び出す
+        };
 
     </script>
 </head>
 <body>
 
     <div class="top-bar">
-        <button id="urlListButton">URLリスト</button>
+        <button id="urlListButton" onclick="window.location.href='instance.html'">URLリスト</button>
         <button id="openChatButton">オープンチャット</button>
         <button id="shadowButton">New Shadow proxy</button>
         <button id="uvproxyButton">New Croxy proxy</button>
@@ -335,7 +366,7 @@
         }
 
         document.getElementById('urlListButton').onclick = function() {
-            window.location.href = '/list';
+            window.location.href = 'instance.html';
         };
 
         document.getElementById('proxyButton').onclick = function() {
@@ -396,6 +427,5 @@
         <button id="accept-btn" onclick="acceptCookies()">同意する</button>
         <button id="reject-btn" onclick="rejectCookies()">拒否する</button>
     </div>
-    <script src="script.js"></script>
 </body>
 </html>
