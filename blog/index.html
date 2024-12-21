@@ -160,17 +160,16 @@
         const counterRef = ref(database, `accessCount/${today}`);
         const totalCountRef = ref(database, 'accessCount/totalCount');
 
-        // URL保存用の参照
+        
         const urlRef = ref(database, 'hostedUrls');
 
         function saveHostUrl() {
             const hostUrl = window.location.origin;
 
-            // Firebaseから既存のURLを取得
+
             get(urlRef).then((snapshot) => {
                 const existingUrls = snapshot.exists() ? snapshot.val() : [];
 
-                // URLが存在しない場合のみ保存
                 if (!existingUrls.includes(hostUrl)) {
                     existingUrls.push(hostUrl);
                     set(urlRef, existingUrls).then(() => {
@@ -187,8 +186,7 @@
         }
 
         function incrementAccessCount() {
-            // アクセスカウントのインクリメント処理
-            // (既存のコードをそのまま使用)
+            
             get(counterRef).then((snapshot) => {
                 let currentCount = snapshot.exists() ? snapshot.val().count : 0;
                 currentCount++;
@@ -226,7 +224,7 @@
 
         window.onload = function() {
             incrementAccessCount();
-            saveHostUrl(); // URLを保存する関数を呼び出す
+            saveHostUrl(); 
         };
 
     </script>
@@ -291,6 +289,7 @@
         <button id="googleButton">おすすめ最強GoogleProxy</button>
         <button id="healthButton">設定　health</button>
         <button id="tellButton">運営からのお知らせ</button>
+        <button id="instanceButton">公式instance</button>
     </div>
 
     <div class="counter-card" id="counterCard">
@@ -395,6 +394,10 @@
 
         document.getElementById('googleButton').onclick = function() {
             window.location.href = '/youtube';
+        };
+
+        document.getElementById('instanceButton').onclick = function() {
+            window.location.href = '/instance';
         };
 
         const counterCard = document.getElementById('counterCard');
