@@ -1,12 +1,12 @@
-###　開発者向け外部プロキシの実装
+# Sand Smoke Proxy
+
+©2024 mino_hobby
+
+開発者向け外部プロキシの実装
 
 いつまでもGoogleScriptに頼っていてはいけないと思い作成しました。およそ2000個のYUKIやinvidiousやその他の代替から取得しています。
 API　https://new-era-hack.vercel.app/api/fetch?video_id=ビデオID　　　　
 このAPIはいつか使えなくなることを理解してください。使用は自由です
-
-# Sand Smoke Proxy
-
-©2024 mino_hobby
 
 ## デプロイ
 
