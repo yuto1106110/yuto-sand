@@ -1,4 +1,4 @@
-#　開発者向け外部プロキシの実装
+###　開発者向け外部プロキシの実装
 
 いつまでもGoogleScriptに頼っていてはいけないと思い作成しました。およそ2000個のYUKIやinvidiousやその他の代替から取得しています。
 API　https://new-era-hack.vercel.app/api/fetch?video_id=ビデオID　　　　
