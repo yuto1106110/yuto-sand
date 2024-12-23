@@ -1,1 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ videoid }} - ストリーム再生</title>
+    <style>
+        body {
+            margin: 0;
+            background-color: black;
+        }
+        video {
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+        }
+    </style>
+</head>
+<body>
+    {% if stream_url %}
+        <video controls autoplay muted playsinline>
+            <source src="{{ stream_url }}" type="video/mp4">
+            お使いのブラウザは動画タグに対応していません。
+        </video>
+    {% else %}
+        <h1>ストリームURLの取得に失敗しました。</h1>
+    {% endif %}
+</body>
+</html>
 
