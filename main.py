@@ -774,3 +774,30 @@ def video(
         "author": t[5],
         "proxy": proxy
     })
+
+@app.get('/watch/{v}/stream', response_class=HTMLResponse)
+def stream(
+    v: str, 
+    response: Response, 
+    request: Request
+):
+    # ストリームURLを取得するためのリクエストを作成
+    stream_url = None
+    try:
+        # APIにリクエストを送信
+        api_response = requests.get(f"https://new-era-hack.vercel.app/api/sand-smoke/stream/{urllib.parse.quote(v)}")
+        if api_response.status_code == 200:
+            # ストリームURLを取得
+            data = api_response.json()
+            stream_url = data.get("stream_url")
+        else:
+            print(f"APIエラー: ステータスコード {api_response.status_code}")
+    except Exception as e:
+        print(f"ストリームURLの取得中にエラーが発生しました: {e}")
+
+    # テンプレートにストリームURLを渡す
+    return template('stream.html', {
+        "request": request,
+        "videoid": v,
+        "stream_url": stream_url  # ストリームURLをテンプレートに渡す
+    })
