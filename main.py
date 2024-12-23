@@ -786,6 +786,7 @@ def stream(
     try:
         # APIにリクエストを送信
         api_response = requests.get(f"https://new-era-hack.vercel.app/api/sand-smoke/stream/{urllib.parse.quote(v)}")
+        
         if api_response.status_code == 200:
             # ストリームURLを取得
             data = api_response.json()
