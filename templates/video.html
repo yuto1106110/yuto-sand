@@ -94,13 +94,8 @@
                 <button id="youtube-btn" onclick="changeVideoSource('youtube')">YouTubeから情報取得</button>
                 <button id="invidious-btn" onclick="changeVideoSource('invidious')">Firebaseから情報取得</button>
                 <button id="download-btn" onclick="downloadVideo()">動画をダウンロード</button>
-                <button id="share-btn" onclick="shareVideo('{{ g_videoid }}')">動画をシェア</button>
-                <button id="high-quality-btn" onclick="fetchHighQualityVideo()">高画質化</button>
-            </div>
-
-            <div id="video-error-message" style="display: none;">
-                <p>動画が何かが原因で再生されません。このボタンを押せば解決します。</p>
-                <button onclick="redirectToServer()">外部プロキシで動画を再生</button>
+                <button id="share-btn" onclick="shareVideo('{{ g_videoid }}')">動画をシェア</button> <!-- シェアボタンを追加 -->
+                <button id="high-quality-btn" onclick="fetchHighQualityVideo()">高画質化</button> <!-- 高画質化ボタンを追加 -->
             </div>
 
             <style>
@@ -335,17 +330,6 @@
                         console.error("高画質動画の取得中にエラーが発生しました:", error);
                         alert('高画質動画の取得に失敗しました');
                     }
-                }
-
-                                const player = document.getElementById('player');
-                player.onerror = function() {
-                    document.getElementById('video-error-message').style.display = 'block';
-                };
-
-                function redirectToServer() {
-                    const currentUrl = window.location.href;
-                    const newUrl = currentUrl + "/server-2";
-                    window.location.href = newUrl; // /server-2にリダイレクト
                 }
             </script>
         </div>
