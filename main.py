@@ -796,7 +796,7 @@ def stream(
         print(f"ストリームURLの取得中にエラーが発生しました: {e}")
 
     # テンプレートにストリームURLを渡す
-    return template('video.html', {
+    return template('stream.html', {
         "request": request,
         "videoid": v,
         "stream_url": stream_url  # ストリームURLをテンプレートに渡す
