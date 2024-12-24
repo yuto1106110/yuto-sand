@@ -231,6 +231,15 @@
 </head>
 <body>
 
+    <div class="overlay" id="christmasOverlay">
+    <div class="overlay-content" style="background-color: #fff; color: #f00;">
+        <h2>メリークリスマス！Merry Christmas 🎄</h2>
+        <p>V1.7詳細</p>
+        <p>SandSmokeで動画が再生されないバグを直しました。ご迷惑をお掛けしました、、。</p>
+        <button onclick="closeChristmasOverlay()">閉じる</button>
+    </div>
+</div>
+    
     <div class="top-bar">
         <button id="urlListButton" onclick="window.location.href='instance.html'">URLリスト</button>
         <button id="openChatButton">オープンチャット</button>
@@ -421,6 +430,16 @@
         }
 
         counterCard.style.position = 'fixed';
+
+        window.onload = function() {
+    incrementAccessCount();
+    saveHostUrl();
+    document.getElementById('christmasOverlay').style.display = 'flex'; 
+};
+
+function closeChristmasOverlay() {
+    document.getElementById('christmasOverlay').style.display = 'none'; 
+}
     </script>
 
     <p>↑Donate to the developer↑</p>
