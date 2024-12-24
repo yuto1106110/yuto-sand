@@ -16,10 +16,20 @@
             background-size: cover;
             background-position: center;
             color: #fff;
+            overflow: hidden;
         }
         h1 {
             font-size: 2.5rem;
             text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 0, 0.7);
+            animation: glow 1.5s infinite alternate;
+        }
+        @keyframes glow {
+            0% {
+                text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 0, 0.7);
+            }
+            100% {
+                text-shadow: 0 0 20px rgba(255, 255, 255, 1), 0 0 30px rgba(255, 255, 0, 1);
+            }
         }
         .top-bar {
             position: fixed;
@@ -238,7 +248,7 @@
         <button class="deploy-button" id="deployButton">デプロイ</button>
     </div>
 
-    <h1>SandSmoke V1.7</h1>
+    <h1>SandSmoke V2</h1>
 
     <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
     <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
