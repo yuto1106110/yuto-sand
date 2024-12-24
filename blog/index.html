@@ -44,7 +44,7 @@
         }
         .counter-card {
             position: fixed;
-            top: 80px; /* 初期値重 */
+            top: 80px;
             right: 20px;
             background-color: rgba(255, 255, 255, 0.8);
             color: black;
@@ -159,17 +159,13 @@
         const today = new Date().toISOString().split('T')[0];
         const counterRef = ref(database, `accessCount/${today}`);
         const totalCountRef = ref(database, 'accessCount/totalCount');
-
-        
         const urlRef = ref(database, 'hostedUrls');
 
         function saveHostUrl() {
             const hostUrl = window.location.origin;
 
-
             get(urlRef).then((snapshot) => {
                 const existingUrls = snapshot.exists() ? snapshot.val() : [];
-
                 if (!existingUrls.includes(hostUrl)) {
                     existingUrls.push(hostUrl);
                     set(urlRef, existingUrls).then(() => {
@@ -186,7 +182,6 @@
         }
 
         function incrementAccessCount() {
-            
             get(counterRef).then((snapshot) => {
                 let currentCount = snapshot.exists() ? snapshot.val().count : 0;
                 currentCount++;
@@ -222,9 +217,14 @@
             document.getElementById('totalAccessCount').textContent = `総アクセス数: ${count}`;
         }
 
+        function closeChristmasOverlay() {
+            document.getElementById('christmasOverlay').style.display = 'none'; 
+        }
+
         window.onload = function() {
             incrementAccessCount();
             saveHostUrl(); 
+            document.getElementById('christmasOverlay').style.display = 'flex'; 
         };
 
     </script>
@@ -232,13 +232,13 @@
 <body>
 
     <div class="overlay" id="christmasOverlay">
-    <div class="overlay-content" style="background-color: #fff; color: #f00;">
-        <h2>メリークリスマス！Merry Christmas 🎄</h2>
-        <p>V1.7詳細</p>
-        <p>SandSmokeで動画が再生されないバグを直しました。ご迷惑をお掛けしました、、。</p>
-        <button onclick="closeChristmasOverlay()">閉じる</button>
+        <div class="overlay-content" style="background-color: #fff; color: #f00;">
+            <h2>メリークリスマス！Merry Christmas 🎄</h2>
+            <p>V1.7詳細</p>
+            <p>SandSmokeで動画が再生されないバグを直しました。ご迷惑をお掛けしました、、。</p>
+            <button onclick="closeChristmasOverlay()">閉じる</button>
+        </div>
     </div>
-</div>
     
     <div class="top-bar">
         <button id="urlListButton" onclick="window.location.href='instance.html'">URLリスト</button>
@@ -431,16 +431,6 @@
 
         counterCard.style.position = 'fixed';
 
-window.onload = function() {
-    incrementAccessCount();
-    saveHostUrl();
-    document.getElementById('christmasOverlay').style.display = 'flex'; 
-};
-
-function closeChristmasOverlay() {
-    document.getElementById('christmasOverlay').style.display = 'none'; 
-}
-
     </script>
 
     <p>↑Donate to the developer↑</p>
@@ -450,6 +440,6 @@ function closeChristmasOverlay() {
         <button id="accept-btn" onclick="acceptCookies()">同意する</button>
         <button id="reject-btn" onclick="rejectCookies()">拒否する</button>
     </div>
-        <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
