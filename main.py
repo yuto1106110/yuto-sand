@@ -320,9 +320,6 @@ def getting_data(videoid):
     # 既存のデータ取得処理を行う
     urls = [
         f"https://ludicrous-wonderful-temple.glitch.me/api/login/{urllib.parse.quote(videoid)}",
-        f"https://free-sudden-kiss.glitch.me/api/login/{urllib.parse.quote(videoid)}",
-        f"https://wakame02m.glitch.me/api/login/{urllib.parse.quote(videoid)}",
-        f"https://natural-voltaic-titanium.glitch.me/api/login/{urllib.parse.quote(videoid)}",
         f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
         f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
     ]
