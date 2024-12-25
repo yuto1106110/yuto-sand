@@ -18,11 +18,41 @@
             color: #fff;
             overflow: hidden;
         }
+
         h1 {
-            font-size: 2.5rem;
-            text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 0, 0.7);
-            animation: glow 1.5s infinite alternate;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 3rem; 
+            color: #fff;
         }
+
+        .slide-in-left {
+            opacity: 0;
+            transform: translateX(-100px); 
+            animation: slideInLeft 2s forwards, glow 1.5s infinite alternate; 
+        }
+
+        .slide-in-right {
+            opacity: 0;
+            transform: translateX(100px); 
+            animation: slideInRight 2s forwards, glow 1.5s infinite alternate; 
+        }
+
+        @keyframes slideInLeft {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
         @keyframes glow {
             0% {
                 text-shadow: 0 0 5px rgba(255, 255, 255, 0.8), 0 0 10px rgba(255, 255, 0, 0.7);
@@ -55,7 +85,7 @@
         }
         .counter-card {
             position: fixed;
-            top: 80px; /* 初期値重 */
+            top: 80px;
             right: 20px;
             background-color: rgba(255, 255, 255, 0.8);
             color: black;
@@ -99,7 +129,7 @@
             border: none;
             border-radius: 5px;
             margin-right: 10px;
-            display: none; /* 初期は非表示 */
+            display: none;
         }
         canvas {
             position: absolute;
@@ -151,6 +181,7 @@
         }
     </style>
     <script type="module">
+        
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-app.js";
         import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.0.2/firebase-database.js";
 
@@ -234,7 +265,6 @@
             incrementAccessCount();
             saveHostUrl(); 
         };
-
     </script>
 </head>
 <body>
@@ -248,8 +278,11 @@
         <button class="deploy-button" id="deployButton">デプロイ</button>
     </div>
 
-    <h1>SandSmoke V2</h1>
-
+    <h1>
+        <span class="slide-in-left">SandSmoke</span>
+        <span class="slide-in-right">V2.1</span>
+    </h1>
+    
     <button class="toggle-proxy" id="proxyToggle">proxy: OFF</button>
     <button class="launch-rammerhead" id="rammerheadButton">Rammerhead</button>
 
@@ -306,6 +339,7 @@
     </div>
 
     <script>
+        
         let isProxyMode = false;
         const canvas = document.getElementById('sandstormCanvas');
         const ctx = canvas.getContext('2d');
@@ -447,6 +481,6 @@
         <button id="accept-btn" onclick="acceptCookies()">同意する</button>
         <button id="reject-btn" onclick="rejectCookies()">拒否する</button>
     </div>
-     <script src="script.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>
