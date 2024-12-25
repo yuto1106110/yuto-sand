@@ -298,7 +298,6 @@ def getting_data(videoid):
         f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
         f"https://new-era-hack.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
         f"https://new-era-hack.vercel.app/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
-        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi"
     ]
 
     stream_url = ""
@@ -310,12 +309,27 @@ def getting_data(videoid):
             if stream_response.status_code == 200:
                 stream_data = stream_response.json()
                 stream_url = stream_data.get("stream_url", "")
-                if stream_url:  # ストリームURLが取得できたらループを抜ける
+                if stream_url and stream_url.startswith("https://"):  # https://形式を確認
                     break
+                else:
+                    print(f"取得したストリームURLが無効です: {stream_url}")
             else:
                 print(f"ストリームAPIエラー: ステータスコード {stream_response.status_code}")
         except Exception as e:
             print(f"ストリームURLの取得中にエラーが発生しました: {e}")
+
+    # https://形式のURLが取得できなかった場合、わかめ様のAPIから取得
+    if not stream_url:
+        fallback_api_url = f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi"
+        try:
+            fallback_response = requests.get(fallback_api_url)
+            if fallback_response.status_code == 200:
+                fallback_data = fallback_response.json()
+                stream_url = fallback_data.get("stream_url", "")
+            else:
+                print(f"フォールバックAPIエラー: ステータスコード {fallback_response.status_code}")
+        except Exception as e:
+            print(f"フォールバックからストリームURLの取得中にエラーが発生しました: {e}")
 
     # 既存のデータ取得処理を行う
     urls = [
