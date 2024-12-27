@@ -304,11 +304,11 @@ def getting_data(videoid):
     
     stream_url = ""
     related_videos = []
-    description = ""
-    title = ""
-    authorId = ""
-    author = ""
-    author_icon = ""
+    description = "不明"
+    title = "不明"
+    authorId = "不明"
+    author = "不明"
+    author_icon = "不明"
     view_count = 0
 
     # APIを順に試してデータを取得
@@ -331,12 +331,12 @@ def getting_data(videoid):
                         "author": data.get("channelName"),
                         "viewCount": data.get("videoViews")
                     })
-                    description = data.get("videoDes", "").replace("\n", "<br>")
-                    title = data.get("videoTitle")
-                    authorId = data.get("channelId")
-                    author = data.get("channelName")
-                    author_icon = data.get("channelImage")
-                    view_count = data.get("videoViews")
+                    description = data.get("videoDes", "").replace("\n", "<br>") or description
+                    title = data.get("videoTitle") or title
+                    authorId = data.get("channelId") or authorId
+                    author = data.get("channelName") or author
+                    author_icon = data.get("channelImage") or author_icon
+                    view_count = data.get("videoViews") or view_count
 
                 # ストリームURLまたは動画情報が取得できた場合、ループを抜ける
                 if stream_url or related_videos:
@@ -347,7 +347,7 @@ def getting_data(videoid):
         except Exception as e:
             print(f"{api_url} からのデータ取得中にエラーが発生しました: {e}")
 
-    if not related_videos:
+    if not related_videos and not stream_url:
         raise Exception("全ての代替URLからデータを取得できませんでした。")
 
     # get_dataの形式に合わせて返す
