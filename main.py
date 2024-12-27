@@ -262,35 +262,11 @@ def apirequest_video(url):
 def get_data(videoid):
     global logs
     try:
-        # 最初に既存の方法でデータを取得しようとする
-        t = json.loads(apirequest_video(r"api/v1/videos/" + urllib.parse.quote(videoid)))
-    except (APItimeoutError, json.JSONDecodeError) as e:
-        print(f"データ取得に失敗しました: {e}")
-        # 失敗したときには代替の方法を使用する
         return getting_data(videoid)
+    except Exception as e:
+        print(f"データ取得に失敗しました: {e}")
+        raise
 
-    # 関連動画を解析してリストにする
-    related_videos = [
-        {
-            "id": i["videoId"],
-            "title": i["title"],
-            "authorId": i["authorId"],
-            "author": i["author"],
-            "viewCount": i["viewCount"]
-        }
-        for i in t["recommendedVideos"]
-    ]
-
-    return (
-        related_videos,  
-        list(reversed([i["url"] for i in t["formatStreams"]]))[:2],  
-        t["descriptionHtml"].replace("\n", "<br>"),  
-        t["title"],  
-        t["authorId"],  
-        t["author"],  
-        t["authorThumbnails"][-1]["url"],  
-        t["viewCount"]  
-    )
 
 def getting_data(videoid):
     # ストリームURLを取得するためのAPIのリスト
