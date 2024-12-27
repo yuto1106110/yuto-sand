@@ -304,11 +304,11 @@ def getting_data(videoid):
     
     stream_url = ""
     related_videos = []
-    description = ""
-    title = ""
-    authorId = ""
-    author = ""
-    author_icon = ""
+    description = "不明"
+    title = "不明"
+    authorId = "不明"
+    author = "不明"
+    author_icon = "不明"
     view_count = 0
 
     # APIを順に試してデータを取得
@@ -325,18 +325,18 @@ def getting_data(videoid):
                 # 動画情報の取得
                 if "videoId" in data:
                     related_videos.append({
-                        "id": data.get("videoId"),
-                        "title": data.get("videoTitle"),
-                        "authorId": data.get("channelId"),
-                        "author": data.get("channelName"),
-                        "viewCount": data.get("videoViews")
+                        "id": data.get("videoId", "不明"),
+                        "title": data.get("videoTitle", "不明"),
+                        "authorId": data.get("channelId", "不明"),
+                        "author": data.get("channelName", "不明"),
+                        "viewCount": data.get("videoViews", "不明")
                     })
-                    description = data.get("videoDes", "").replace("\n", "<br>")
-                    title = data.get("videoTitle")
-                    authorId = data.get("channelId")
-                    author = data.get("channelName")
-                    author_icon = data.get("channelImage")
-                    view_count = data.get("videoViews")
+                    description = data.get("videoDes", "不明").replace("\n", "<br>")
+                    title = data.get("videoTitle", "不明")
+                    authorId = data.get("channelId", "不明")
+                    author = data.get("channelName", "不明")
+                    author_icon = data.get("channelImage", "不明")
+                    view_count = data.get("videoViews", 0)
 
                 # ストリームURLまたは動画情報が取得できた場合、ループを抜ける
                 if stream_url or related_videos:
