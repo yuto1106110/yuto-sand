@@ -217,7 +217,11 @@ def apicommentsrequest(url):
 
 video_apis = [
     r"https://invidious.jing.rocks/",
-    r"https://invidious.nerdvpn.de/"
+    r"https://invidious.nerdvpn.de/",
+    r"https://script.google.com/macros/s/AKfycbxic9NV_JbKs1Ia4m5yw6z7nAZjkQ0mjZ2FGi29ZtLMhX9R6JSEO6jZBuXpNyWHCuRy/exec?videoId=",
+    r"https://script.google.com/macros/s/AKfycbzDTu2EJQrGPPU-YS3EFarXbfh9zGB1zR9ky-9AunHl7Yp3Gq83rh1726JYjxbjbEsB/exec?videoId=",
+    r"https://script.google.com/macros/s/AKfycbw43HTKJe0khOM3h5lrRbWw2OUONcbQCsnSry7F6c_1bPdtxVjTUotm1_XY2KfqMLWT/exec?videoId=",
+    r"https://script.google.com/macros/s/AKfycbxYjOWULjin5kpp-NcjjjGujVX3wy1TEJVUR2AZtR6-5c_q7GBr1Nctl2_Kat4lSboD/exec?videoId=",
 ]
 
 max_time = 30  # 最大待機時間の設定
@@ -258,11 +262,35 @@ def apirequest_video(url):
 def get_data(videoid):
     global logs
     try:
-        return getting_data(videoid)
-    except Exception as e:
+        # 最初に既存の方法でデータを取得しようとする
+        t = json.loads(apirequest_video(r"api/v1/videos/" + urllib.parse.quote(videoid)))
+    except (APItimeoutError, json.JSONDecodeError) as e:
         print(f"データ取得に失敗しました: {e}")
-        raise
+        # 失敗したときには代替の方法を使用する
+        return getting_data(videoid)
 
+    # 関連動画を解析してリストにする
+    related_videos = [
+        {
+            "id": i["videoId"],
+            "title": i["title"],
+            "authorId": i["authorId"],
+            "author": i["author"],
+            "viewCount": i["viewCount"]
+        }
+        for i in t["recommendedVideos"]
+    ]
+
+    return (
+        related_videos,  
+        list(reversed([i["url"] for i in t["formatStreams"]]))[:2],  
+        t["descriptionHtml"].replace("\n", "<br>"),  
+        t["title"],  
+        t["authorId"],  
+        t["author"],  
+        t["authorThumbnails"][-1]["url"],  
+        t["viewCount"]  
+    )
 
 def getting_data(videoid):
     # ストリームURLを取得するためのAPIのリスト
