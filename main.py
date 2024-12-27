@@ -292,17 +292,30 @@ def get_data(videoid):
         t["viewCount"]  
     )
 
+def fetch_stream_url(videoid):
+    # ストリームURLを取得するためのAPI
+    api_url = f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/sand-smoke/stream/{urllib.parse.quote(videoid)}"
+    try:
+        response = requests.get(api_url)
+        if response.status_code == 200:
+            data = response.json()
+            return {"stream_url": data.get("stream_url", "不明")}
+        else:
+            print(f"APIエラー: ステータスコード {response.status_code}")
+            return {"stream_url": "不明"}
+    except Exception as e:
+        print(f"{api_url} からのデータ取得中にエラーが発生しました: {e}")
+        return {"stream_url": "不明"}
+
 def getting_data(videoid):
-    # ストリームURLと動画情報を取得するためのAPIのリスト
+    # APIのリスト
     api_urls = [
-        f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
         f"https://new-era-hack.vercel.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
         f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
         f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
         f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
     ]
     
-    stream_url = ""
     related_videos = []
     description = "不明"
     title = "不明"
@@ -311,13 +324,17 @@ def getting_data(videoid):
     author_icon = "不明"
     view_count = 0
 
+    # 別の関数からストリームURLを取得
+    stream_info = fetch_stream_url(videoid)
+    stream_url = stream_info["stream_url"]
+
     # APIを順に試してデータを取得
     for api_url in api_urls:
         try:
             response = requests.get(api_url)
             if response.status_code == 200:
                 data = response.json()
-
+                
                 # 動画情報の取得
                 if "videoId" in data:
                     related_videos.append({
@@ -334,12 +351,8 @@ def getting_data(videoid):
                     author_icon = data.get("channelImage", "不明")
                     view_count = data.get("videoViews", 0)
 
-                # ストリームURLの取得
-                if "stream_url" in data:
-                    stream_url = data["stream_url"]
-
-                # ストリームURLまたは動画情報が取得できた場合、ループを抜ける
-                if stream_url or related_videos:
+                # 動画情報が取得できた場合、ループを抜ける
+                if related_videos:
                     break
 
             else:
@@ -361,7 +374,7 @@ def getting_data(videoid):
         author_icon,      # 作者のアイコンURL
         view_count        # ビュー数
     )
-
+    
 def load_search(i):
     # 動画情報の取得
     if i["type"] == "video":
