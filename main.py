@@ -295,7 +295,6 @@ def get_data(videoid):
 def getting_data(videoid):
     # ストリームURLと動画情報を取得するためのAPIのリスト
     api_urls = [
-        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
         f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
         f"https://new-era-hack.vercel.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
         f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
