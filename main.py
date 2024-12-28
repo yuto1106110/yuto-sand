@@ -303,7 +303,6 @@ def getting_data(videoid):
     ]
     
     stream_url = ""
-    related_videos = []
     description = ""
     title = ""
     authorId = ""
@@ -352,7 +351,6 @@ def getting_data(videoid):
 
     # get_dataの形式に合わせて返す
     return (
-        related_videos,  # 推奨動画
         [stream_url],     # ストリームURLを追加
         description,      # 説明文
         title,            # 動画タイトル
