@@ -293,74 +293,73 @@ def get_data(videoid):
     )
 
 def getting_data(videoid):
-    # ストリームURLと動画情報を取得するためのAPIのリスト
-    api_urls = [
-        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
+    # ストリームURLを取得するためのAPIのリスト
+    stream_api_urls = [
+        f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
+        f"https://new-era-hack.vercel.app/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
+        f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}"
+    ]
+
+    stream_url = ""
+    
+    # ストリームURLを取得
+    for api_url in stream_api_urls:
+        try:
+            stream_response = requests.get(api_url)
+            if stream_response.status_code == 200:
+                stream_data = stream_response.json()
+                stream_url = stream_data.get("stream_url", "")
+                if stream_url:  # ストリームURLが取得できたらループを抜ける
+                    break
+            else:
+                print(f"ストリームAPIエラー: ステータスコード {stream_response.status_code}")
+        except Exception as e:
+            print(f"ストリームURLの取得中にエラーが発生しました: {e}")
+
+    # 既存のデータ取得処理を行う
+    urls = [
         f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
-        f"https://new-era-hack.vercel.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
-        f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
-        f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
+        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
     ]
     
-    stream_url = ""
-    related_videos = []
-    description = ""
-    title = ""
-    authorId = ""
-    author = ""
-    author_icon = ""
-    view_count = 0
-
-    # APIを順に試してデータを取得
-    for api_url in api_urls:
+    for url in urls:
         try:
-            response = requests.get(api_url)
+            response = requests.get(url)
             if response.status_code == 200:
-                data = response.json()
+                t = response.json()
                 
-                # ストリームURLの取得
-                if "stream_url" in data:
-                    stream_url = data["stream_url"]
-
-                # 動画情報の取得
-                if "videoId" in data:
-                    related_videos.append({
-                        "id": data.get("videoId"),
-                        "title": data.get("videoTitle"),
-                        "authorId": data.get("channelId"),
-                        "author": data.get("channelName"),
-                        "viewCount": data.get("videoViews")
-                    })
-                    description = data.get("videoDes", "").replace("\n", "<br>")
-                    title = data.get("videoTitle")
-                    authorId = data.get("channelId")
-                    author = data.get("channelName")
-                    author_icon = data.get("channelImage")
-                    view_count = data.get("videoViews")
-
-                # ストリームURLまたは動画情報が取得できた場合、ループを抜ける
-                if stream_url or related_videos:
-                    break
-
-            else:
-                print(f"APIエラー: ステータスコード {response.status_code}")
+                # 推奨動画リストの構築
+                related_videos = [{
+                    "id": videoid,  # videoIdの代わりにvideoidを使用
+                    "title": t["title"],
+                    "authorId": t["authorId"],  # authorIdのフィールドが必要
+                    "author": t["author"],        # authorのフィールドが必要
+                    "viewCount": t["view_count"]
+                }]
+                
+                # 必要な情報を取得
+                description = t["description"].replace("\n", "<br>")
+                title = t["title"]
+                authorId = t["authorId"]
+                author = t["author"]
+                author_icon = t.get("thumbnail", "")  # サムネイルを作者アイコンとして使用
+                view_count = t["view_count"]
+                
+                # get_dataの形式に合わせて返す
+                return (
+                    related_videos,  # 推奨動画
+                    [stream_url],     # ストリームURLを追加
+                    description,      # 説明文
+                    title,            # 動画タイトル
+                    authorId,         # アウティアのID
+                    author,           # 動画の作者
+                    author_icon,      # 作者のアイコンURL
+                    view_count        # ビュー数
+                )
         except Exception as e:
-            print(f"{api_url} からのデータ取得中にエラーが発生しました: {e}")
-
-    if not related_videos:
-        raise Exception("全ての代替URLからデータを取得できませんでした。")
-
-    # get_dataの形式に合わせて返す
-    return (
-        related_videos,  # 推奨動画
-        [stream_url],     # ストリームURLを追加
-        description,      # 説明文
-        title,            # 動画タイトル
-        authorId,         # アウティアのID
-        author,           # 動画の作者
-        author_icon,      # 作者のアイコンURL
-        view_count        # ビュー数
-    )
+            print(f"{url} からのデータ取得に失敗しました: {e}")
+    
+    raise Exception("全ての代替URLからデータを取得できませんでした。")
 
 def load_search(i):
     # 動画情報の取得
