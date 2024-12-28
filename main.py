@@ -295,7 +295,6 @@ def get_data(videoid):
 def getting_data(videoid):
     # ストリームURLを取得するためのAPIのリスト
     stream_api_urls = [
-        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
         f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
         f"https://new-era-hack.vercel.app/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
         f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}"
@@ -319,9 +318,8 @@ def getting_data(videoid):
 
     # 既存のデータ取得処理を行う
     urls = [
-        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
         f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
-        f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
+        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
     ]
     
     for url in urls:
