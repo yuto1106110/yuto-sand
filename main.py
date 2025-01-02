@@ -216,10 +216,15 @@ def apicommentsrequest(url):
 
 
 video_apis = [
-    r"https://script.google.com/macros/s/AKfycbxic9NV_JbKs1Ia4m5yw6z7nAZjkQ0mjZ2FGi29ZtLMhX9R6JSEO6jZBuXpNyWHCuRy/exec?videoId="
+    r"https://invidious.jing.rocks/",
+    r"https://invidious.nerdvpn.de/",
+    r"https://script.google.com/macros/s/AKfycbxic9NV_JbKs1Ia4m5yw6z7nAZjkQ0mjZ2FGi29ZtLMhX9R6JSEO6jZBuXpNyWHCuRy/exec?videoId=",
+    r"https://script.google.com/macros/s/AKfycbzDTu2EJQrGPPU-YS3EFarXbfh9zGB1zR9ky-9AunHl7Yp3Gq83rh1726JYjxbjbEsB/exec?videoId=",
+    r"https://script.google.com/macros/s/AKfycbw43HTKJe0khOM3h5lrRbWw2OUONcbQCsnSry7F6c_1bPdtxVjTUotm1_XY2KfqMLWT/exec?videoId=",
+    r"https://script.google.com/macros/s/AKfycbxYjOWULjin5kpp-NcjjjGujVX3wy1TEJVUR2AZtR6-5c_q7GBr1Nctl2_Kat4lSboD/exec?videoId=",
 ]
 
-max_time = 60  # 最大待機時間の設定
+max_time = 30  # 最大待機時間の設定
 max_api_wait_time = 5  # APIリクエストの最大待機時間
 
 class APItimeoutError(Exception):
@@ -291,8 +296,10 @@ def getting_data(videoid):
     # ストリームURLと動画情報を取得するためのAPIのリスト
     api_urls = [
         f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
+        f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
         f"https://new-era-hack.vercel.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
-        f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}"
+        f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
+        f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
     ]
     
     stream_url = ""
