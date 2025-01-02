@@ -263,7 +263,7 @@ def get_data(videoid):
     global logs
     try:
         # 最初に既存の方法でデータを取得しようとする
-        t = json.loads(apirequest_video(r"api/v1/videos/" + urllib.parse.quote(videoid)))
+        t = json.loads(apirequest(r"api/v1/videos/" + urllib.parse.quote(videoid)))
     except (APItimeoutError, json.JSONDecodeError) as e:
         print(f"データ取得に失敗しました: {e}")
         # 失敗したときには代替の方法を使用する
@@ -293,74 +293,73 @@ def get_data(videoid):
     )
 
 def getting_data(videoid):
-    # ストリームURLと動画情報を取得するためのAPIのリスト
-    api_urls = [
-        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
-        f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
-        f"https://new-era-hack.vercel.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
-        f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
-        f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
+    urls = [
+        f"https://just-frequent-network.glitch.me/api/{urllib.parse.quote(videoid)}",
+        f"https://amenable-charm-lute.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://free-sudden-kiss.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://wtserver1.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://wataamee.glitch.me/api/{urllib.parse.quote(videoid)}",
+        f"https://natural-voltaic-titanium.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}",
+        f"https://watawatawata.glitch.me/api/login/{urllib.parse.quote(videoid)}"
     ]
     
-    stream_url = ""
-    related_videos = []
-    description = ""
-    title = ""
-    authorId = ""
-    author = ""
-    author_icon = ""
-    view_count = 0
-
-    # APIを順に試してデータを取得
-    for api_url in api_urls:
+    for url in urls:
         try:
-            response = requests.get(api_url)
+            response = requests.get(url)
             if response.status_code == 200:
-                data = response.json()
+                t = response.json()
                 
-                # ストリームURLの取得
-                if "stream_url" in data:
-                    stream_url = data["stream_url"]
-
-                # 動画情報の取得
-                if "videoId" in data:
-                    related_videos.append({
-                        "id": data.get("videoId"),
-                        "title": data.get("videoTitle"),
-                        "authorId": data.get("channelId"),
-                        "author": data.get("channelName"),
-                        "viewCount": data.get("videoViews")
-                    })
-                    description = data.get("videoDes", "").replace("\n", "<br>")
-                    title = data.get("videoTitle")
-                    authorId = data.get("channelId")
-                    author = data.get("channelName")
-                    author_icon = data.get("channelImage")
-                    view_count = data.get("videoViews")
-
-                # ストリームURLまたは動画情報が取得できた場合、ループを抜ける
-                if stream_url or related_videos:
-                    break
-
-            else:
-                print(f"APIエラー: ステータスコード {response.status_code}")
+                # 推奨動画情報の取得
+                recommended_videos = [{
+                    "id": t["videoId"],
+                    "title": t["videoTitle"],
+                    "authorId": t["channelId"],
+                    "author": t["channelName"],
+                    "viewCountText": f"{t['videoViews']} views"
+                }]
+                
+                # ストリームURLや他の情報を取得
+                stream_url = t.get("stream_url", "")
+                description = t.get("videoDes", "").replace("\n", "<br>")
+                title = t.get("videoTitle", "")
+                authorId = t.get("channelId", "")
+                author = t.get("channelName", "")
+                author_icon = t.get("channelImage", "")
+                
+                return recommended_videos, stream_url, description, title, authorId, author, author_icon
+            
         except Exception as e:
-            print(f"{api_url} からのデータ取得中にエラーが発生しました: {e}")
+            print(f"{url} からのデータ取得中にエラーが発生しました: {e}")
 
-    if not related_videos:
-        raise Exception("全ての代替URLからデータを取得できませんでした。")
-
-    # get_dataの形式に合わせて返す
-    return (
-        related_videos,  # 推奨動画
-        [stream_url],     # ストリームURLを追加
-        description,      # 説明文
-        title,            # 動画タイトル
-        authorId,         # アウティアのID
-        author,           # 動画の作者
-        author_icon,      # 作者のアイコンURL
-        view_count        # ビュー数
-    )
+def get2_data(videoid):
+    urls = [
+        f"https://test-blank-page.glitch.me/api/server/v1/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v2/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v3/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v4/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v5/{urllib.parse.quote(videoid)}",
+        f"https://test-blank-page.glitch.me/api/server/v7/{urllib.parse.quote(videoid)}"
+    ]
+    
+    for url in urls:
+        try:
+            response = requests.get(url)
+            if response.status_code == 200:
+                t = response.json()
+                
+                # ストリームURLや動画情報を取得
+                stream_url = t.get("stream_url", "")
+                description = t.get("videoDes", "").replace("\n", "<br>")
+                title = t.get("videoTitle", "")
+                authorId = t.get("channelId", "")
+                author = t.get("channelName", "")
+                author_icon = t.get("channelImage", "")
+                
+                return stream_url, description, title, authorId, author, author_icon
+            
+        except Exception as e:
+            print(f"{url} からのデータ取得中にエラーが発生しました: {e}")
 
 def load_search(i):
     # 動画情報の取得
