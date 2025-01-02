@@ -295,11 +295,7 @@ def get_data(videoid):
 def getting_data(videoid):
     # ストリームURLと動画情報を取得するためのAPIのリスト
     api_urls = [
-        f"https://watawatawata.glitch.me/api/{urllib.parse.quote(videoid)}?token=wakameoishi",
-        f"https://sure-helsa-mino-hobby-1e3b2fbf.koyeb.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
-        f"https://new-era-hack.vercel.app/api/fetch?video_id={urllib.parse.quote(videoid)}",
-        f"https://sand-smoke-api.onrender.com/api/sand-smoke/stream/{urllib.parse.quote(videoid)}",
-        f"https://jade-highfalutin-account.glitch.me/api/login/{urllib.parse.quote(videoid)}"
+        f"https://inv.zzls.xyz/watch?v={urllib.parse.quote(videoid)}"
     ]
     
     stream_url = ""
@@ -314,53 +310,71 @@ def getting_data(videoid):
     # APIを順に試してデータを取得
     for api_url in api_urls:
         try:
-            response = requests.get(api_url)
-            if response.status_code == 200:
-                data = response.json()
-                
-                # ストリームURLの取得
-                if "stream_url" in data:
-                    stream_url = data["stream_url"]
+            # HTMLを取得
+            response = requests.get(api_url, headers={'User-Agent': getRandomUserAgent()})
+            response.raise_for_status()
+            soup = BeautifulSoup(response.text, 'html.parser')
 
-                # 動画情報の取得
-                if "videoId" in data:
-                    related_videos.append({
-                        "id": data.get("videoId"),
-                        "title": data.get("videoTitle"),
-                        "authorId": data.get("channelId"),
-                        "author": data.get("channelName"),
-                        "viewCount": data.get("videoViews")
-                    })
-                    description = data.get("videoDes", "").replace("\n", "<br>")
-                    title = data.get("videoTitle")
-                    authorId = data.get("channelId")
-                    author = data.get("channelName")
-                    author_icon = data.get("channelImage")
-                    view_count = data.get("videoViews")
+            # メタデータから情報を抽出
+            title = soup.find('meta', property='og:title')['content']
+            description = soup.find('meta', property='og:description')['content']
+            thumbnail = soup.find('meta', property='og:image')['content']
+            view_count = soup.find('p', id='views').text.strip()
+            stream_url = soup.find('meta', property='og:video')['content']
 
-                # ストリームURLまたは動画情報が取得できた場合、ループを抜ける
-                if stream_url or related_videos:
-                    break
+            # ストリームURLの修正
+            if stream_url.startswith('/videoplayback'):
+                host = stream_url.split('&host=')[-1]
+                stream_url = f'https://{host}{stream_url.split("&host=")[0]}'
 
-            else:
-                print(f"APIエラー: ステータスコード {response.status_code}")
+            # 動画情報をリストに追加
+            related_videos.append({
+                "id": videoid,
+                "title": title,
+                "authorId": authorId,
+                "author": author,
+                "viewCount": view_count
+            })
+
+            # 取得した情報を返す
+            return (
+                related_videos,  
+                [stream_url],     # ストリームURLを追加
+                description.replace("\n", "<br>"),  # 説明文
+                title,            # 動画タイトル
+                authorId,         # アウティアのID
+                author,           # 動画の作者
+                thumbnail,        # サムネイルURL
+                view_count        # ビュー数
+            )
+        except requests.exceptions.RequestException as e:
+            print(f"HTML取得中にエラーが発生しました: {e}")
+            continue  # 次のAPIを試す
+
+    # 代替手段としてInvidious APIからデータを取得する
+    api_urls = [
+        f"https://yewtu.be/api/v1/videos/{urllib.parse.quote(videoid)}"
+    ]
+
+    for api_url in api_urls:
+        try:
+            res = requests.get(api_url, headers={'User-Agent': getRandomUserAgent()})
+            if res.status_code == 200:
+                data = res.json()
+                return (
+                    [{'id': data['videoId'], 'title': data['title'], 'authorId': data['authorId'], 'author': data['author'], 'viewCount': data['viewCount']}],
+                    [data['formatStreams'][0]['url']],
+                    data['descriptionHtml'].replace("\n", "<br>"),
+                    data['title'],
+                    data['authorId'],
+                    data['author'],
+                    data['thumbnail'],
+                    data['viewCount']
+                )
         except Exception as e:
-            print(f"{api_url} からのデータ取得中にエラーが発生しました: {e}")
+            print(f"Invidious APIからのデータ取得中にエラーが発生しました: {e}")
 
-    if not related_videos:
-        raise Exception("全ての代替URLからデータを取得できませんでした。")
-
-    # get_dataの形式に合わせて返す
-    return (
-        related_videos,  # 推奨動画
-        [stream_url],     # ストリームURLを追加
-        description,      # 説明文
-        title,            # 動画タイトル
-        authorId,         # アウティアのID
-        author,           # 動画の作者
-        author_icon,      # 作者のアイコンURL
-        view_count        # ビュー数
-    )
+    raise Exception("全ての代替URLからデータを取得できませんでした。")
 
 def load_search(i):
     # 動画情報の取得
