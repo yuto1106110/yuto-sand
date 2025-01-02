@@ -7,129 +7,42 @@ import random
 import os
 import subprocess
 from cache import cache
+from bs4 import BeautifulSoup
+from fastapi import FastAPI, Depends
+from fastapi import Response, Cookie, Request
+from fastapi.responses import HTMLResponse, PlainTextResponse
+from fastapi.responses import RedirectResponse as redirect
+from fastapi.middleware.gzip import GZipMiddleware
+from fastapi.staticfiles import StaticFiles
+from pydantic import BaseModel
+from typing import Union
 
-
+# その他の設定と変数の初期化
 max_api_wait_time = 8
 max_time = 12
 apis = [
-    r"https://invidious.jing.rocks/",
-    r"https://invidious.nerdvpn.de/",
-    r"https://inv.nadeko.net/",
-    r"https://invidious.jing.rocks/",
-r"https://inv.vern.cc/",
-r"https://inv.zzls.xyz/",
-r"https://invi.susurrando.com/",
-r"https://invidious.epicsite.xyz/",
-r"https://invidious.esmailelbob.xyz/",
-r"https://invidious.garudalinux.org/",
-r"https://invidious.kavin.rocks/",
-r"https://invidious.lidarshield.cloud/",
-r"https://invidious.lunar.icu/",
-r"https://yt-us.discard.no/",
-r"https://invidious.nerdvpn.de/",
-r"https://invidious.privacydev.net/",
-r"https://invidious.sethforprivacy.com/",
-r"https://invidious.slipfox.xyz/",
-r"https://yt-no.discard.no/",
-r"https://invidious.snopyta.org/",
-r"https://invidious.tiekoetter.com/",
-r"https://invidious.vpsburti.com/",
-r"https://invidious.weblibre.org/",
-r"https://invidious.pufe.org/",
-r"https://iv.ggtyler.dev/",
-r"https://iv.melmac.space/",
-r"https://vid.puffyan.us/",
-r"https://watch.thekitty.zone/",
-r"https://yewtu.be/",
-r"https://youtube.moe.ngo/",
-r"https://yt.31337.one/",
-r"https://yt.funami.tech/",
-r"https://yt.oelrichsgarcia.de/",
-r"https://yt.wkwkwk.fun/",
-r"https://youtube.076.ne.jp/",
-r"https://invidious.projectsegfau.lt/",
-r"https://invidious.fdn.fr/",
-r"https://i.oyster.men/",
-r"https://invidious.domain.glass/",
-r"https://inv.skrep.eu/",
-r"https://clips.im.allmendenetz.de/",
-r"https://ytb.trom.tf/",
-r"https://invidious.pcgamingfreaks.at/",
-r"https://youtube.notrack.ch/",
-r"https://iv.ok0.org/",
-r"https://youtube.vpn-home-net.de/",
-r"http://144.126.251.186/",
-r"https://invidious.citizen4.eu/",
-r"https://yt.sebaorrego.net/",
-r"https://invidious.pesso.al/",
-r"https://invidious.manasiwibi.com/",
-r"https://toob.unternet.org/",
-r"https://youtube.mosesmang.com/",
-r"https://invidious.varishangout.net/",
-r"https://invidio.xamh.de/",
-r"https://yt.tesaguri.club/",
-r"https://video.francevpn.fr/",
-r"https://inv.in.projectsegfau.lt/",
-r"https://invid.nevaforget.de/",
-r"https://tube.foss.wtf/",
-r"https://invidious.777.tf/",
-r"https://inv.tux.pizza/",
-r"https://youtube.076.ne.jp",
-r"https://invidious.osi.kr/",
-r"https://inv.riverside.rocks/",
-r"https://inv.bp.mutahar.rocks/",
-r"https://invidious.namazso.eu/",
-r"https://tube.cthd.icu/",
-r"https://invidious.snopyta.org/",
-r"https://yewtu.be/",
-r"https://invidious.privacy.gd/",
-r"https://invidious.lunar.icu/",
-r"https://vid.puffyan.us/",
-r"https://invidious.weblibre.org/",
-r"https://invidious.esmailelbob.xyz/",
-r"https://invidio.xamh.de/",
-r"https://invidious.kavin.rocks/",
-r"https://invidious-us.kavin.rocks/",
-r"https://invidious.mutahar.rocks/",
-r"https://invidious.zee.li/",
-r"https://tube.connect.cafe/",
-r"https://invidious.zapashcanon.fr/",
-r"https://invidious.poast.org/",
-r"https://ytb.trom.tf/",
-r"https://invidious.froth.zone/",
-r"https://invidious.domain.glass/",
-r"https://invidious.sp-codes.de/",
-r"http://144.126.251.186/",
-r"https://yt.512mb.org/",
-r"https://invidious.fdn.fr/",
-r"https://invidious.pcgamingfreaks.at/",
-r"https://tube.meowz.moe/",
-r"https://clips.im.allmendenetz.de/",
-r"https://inv.skrep.eu/",
-r"https://invidious.frbin.com/",
-r"https://dev.invidio.us/",
-r"https://invidious.site/",
-r"https://invidious.sethforprivacy.com/",
-r"https://invidious.stemy.me/",
-r"https://betamax.cybre.club/",
-r"https://invidious.com/",
-r"https://invidious.snopyta.org",
-r"https://yewtu.be",
-r"https://invidious.kavin.rocks",
-r"https://vid.puffyan.us",
-r"https://inv.riverside.rocks",
-r"https://invidious.not.futbol/",
-r"https://youtube.076.ne.jp",
-r"https://yt.artemislena.eu",
-r"https://invidious.esmailelbob.xyz",
-r"https://invidious.projectsegfau.lt",
-r"https://invidious.dhusch.de/",
-r"https://inv.odyssey346.dev/"
-]
-url = requests.get(r'https://raw.githubusercontent.com/mochidukiyukimi/yuki-youtube-instance/main/instance.txt').text.rstrip()
+    r"https://invidious.jing.rocks/", r"https://invidious.nerdvpn.de/", r"https://inv.nadeko.net/", r"https://invidious.jing.rocks/", r"https://inv.vern.cc/", r"https://inv.zzls.xyz/", r"https://invi.susurrando.com/", r"https://invidious.epicsite.xyz/", r"https://invidious.esmailelbob.xyz/", r"https://invidious.garudalinux.org/", r"https://invidious.kavin.rocks/", r"https://invidious.lidarshield.cloud/", r"https://invidious.lunar.icu/", r"https://yt-us.discard.no/", r"https://invidious.nerdvpn.de/", r"https://invidious.privacydev.net/", r"https://invidious.sethforprivacy.com/", r"https://invidious.slipfox.xyz/", r"https://yt-no.discard.no/", r"https://invidious.snopyta.org/", r"https://invidious.tiekoetter.com/", r"https://invidious.vpsburti.com/", r"https://invidious.weblibre.org/", r"https://invidious.pufe.org/", r"https://iv.ggtyler.dev/", r"https://iv.melmac.space/", r"https://vid.puffyan.us/", r"https://watch.thekitty.zone/", r"https://yewtu.be/", r"https://youtube.moe.ngo/", r"https://yt.31337.one/", r"https://yt.funami.tech/", r"https://yt.oelrichsgarcia.de/", r"https://yt.wkwkwk.fun/", r"https://youtube.076.ne.jp/", r"https://invidious.projectsegfau.lt/", r"https://invidious.fdn.fr/", r"https://i.oyster.men/", r"https://invidious.domain.glass/", r"https://inv.skrep.eu/", r"https://clips.im.allmendenetz.de/", r"https://ytb.trom.tf/", r"https://invidious.pcgamingfreaks.at/", r"https://youtube.notrack.ch/", r"https://iv.ok0.org/", r"https://youtube.vpn-home-net.de/", r"http://144.126.251.186/", r"https://invidious.citizen4.eu/", r"https://yt.sebaorrego.net/", r"https://invidious.pesso.al/", r"https://invidious.manasiwibi.com/", r"https://toob.unternet.org/", r"https://youtube.mosesmang.com/", r"https://invidious.varishangout.net/", r"https://invidio.xamh.de/", r"https://yt.tesaguri.club/", r"https://video.francevpn.fr/", r"https://inv.in.projectsegfau.lt/", r"https://invid.nevaforget.de/", r"https://tube.foss.wtf/", r"https://invidious.777.tf/", r"https://inv.tux.pizza/", r"https://youtube.076.ne.jp", r"https://invidious.osi.kr/", r"https://inv.riverside.rocks/", r"https://inv.bp.mutahar.rocks/", r"https://invidious.namazso.eu/", r"https://tube.cthd.icu/", r"https://invidious.snopyta.org/", r"https://yewtu.be/", r"https://invidious.privacy.gd/", r"https://invidious.lunar.icu/", r"https://vid.puffyan.us/", r"https://invidious.weblibre.org/", r"https://invidious.esmailelbob.xyz/", r"https://invidio.xamh.de/", r"https://invidious.kavin.rocks/", r"https://invidious-us.kavin.rocks/", r"https://invidious.mutahar.rocks/", r"https://invidious.zee.li/", r"https://tube.connect.cafe/", r"https://invidious.zapashcanon.fr/", r"https://invidious.poast.org/", r"https://ytb.trom.tf/", r"https://invidious.froth.zone/", r"https://invidious.domain.glass/", r"https://invidious.sp-codes.de/", r"http://144.126.251.186/", r"https://yt.512mb.org/", r"https://invidious.fdn.fr/", r"https://invidious.pcgamingfreaks.at/", r"https://tube.meowz.moe/", r"https://clips.im.allmendenetz.de/", r"https://inv.skrep.eu/", r"https://invidious.frbin.com/", r"https://dev.invidio.us/", r"https://invidious.site/", r"https://invidious.sethforprivacy.com/", r"https://invidious.stemy.me/", r"https://betamax.cybre.club/", r"https://invidious.com/", r"https://invidious.snopyta.org", r"https://yewtu.be", r"https://invidious.kavin.rocks", r"https://vid.puffyan.us", r"https://inv.riverside.rocks", r"https://invidious.not.futbol/", r"https://youtube.076.ne.jp", r"https://yt.artemislena.eu", r"https://invidious.esmailelbob.xyz", r"https://invidious.projectsegfau.lt", r"https://invidious.dhusch.de/", r"https://inv.odyssey346.dev/"
+]  
+url = requests.get('https://raw.githubusercontent.com/mochidukiyukimi/yuki-youtube-instance/main/instance.txt').text.rstrip()
 version = "1.0"
 
 os.system("chmod 777 ./yukiverify")
+
+class InvidiousAPI:
+    def __init__(self):
+        self.all = ast.literal_eval(requests.get('https://raw.githubusercontent.com/LunaKamituki/yukiyoutube-inv-instances/main/main.txt').text)
+        self.video = self.all['video']
+
+invidious_api = InvidiousAPI()
+
+# ランダムなユーザーエージェントを取得する関数
+def getRandomUserAgent():
+    user_agents = [
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36",
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.1.1 Safari/605.1.15",
+        "Mozilla/5.0 (Linux; Android 10; Pixel 3 XL) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.114 Mobile Safari/537.36"
+    ]
+    return random.choice(user_agents)
 
 # APIリストのコピーを生成
 apichannels = apis.copy()
@@ -214,83 +127,43 @@ def apicommentsrequest(url):
     raise APItimeoutError("APIがタイムアウトしました")
 
 
+def getting_data(videoid):
+    # 最初にInvidiousインスタンスを使用してデータを取得
+    api_urls = invidious_api.video
+    path = f"/videos/{urllib.parse.quote(videoid)}"
 
-video_apis = [
-    r"https://invidious.jing.rocks/",
-    r"https://invidious.nerdvpn.de/",
-    r"https://script.google.com/macros/s/AKfycbxic9NV_JbKs1Ia4m5yw6z7nAZjkQ0mjZ2FGi29ZtLMhX9R6JSEO6jZBuXpNyWHCuRy/exec?videoId=",
-    r"https://script.google.com/macros/s/AKfycbzDTu2EJQrGPPU-YS3EFarXbfh9zGB1zR9ky-9AunHl7Yp3Gq83rh1726JYjxbjbEsB/exec?videoId=",
-    r"https://script.google.com/macros/s/AKfycbw43HTKJe0khOM3h5lrRbWw2OUONcbQCsnSry7F6c_1bPdtxVjTUotm1_XY2KfqMLWT/exec?videoId=",
-    r"https://script.google.com/macros/s/AKfycbxYjOWULjin5kpp-NcjjjGujVX3wy1TEJVUR2AZtR6-5c_q7GBr1Nctl2_Kat4lSboD/exec?videoId=",
-]
-
-max_time = 30  # 最大待機時間の設定
-max_api_wait_time = 5  # APIリクエストの最大待機時間
-
-class APItimeoutError(Exception):
-    pass
-
-def is_json(myjson):
-    try:
-        json_object = json.loads(myjson)
-    except ValueError as e:
-        return False
-    return True
-
-# APIリクエスト関数
-def apirequest_video(url):
-    global video_apis
-    starttime = time.time()
-    for api in video_apis:
-        if time.time() - starttime >= max_time - 1:
-            break
+    for api in api_urls:
         try:
-            res = requests.get(api + url, timeout=max_api_wait_time)
-            if res.status_code == 200 and is_json(res.text):
-                print(f"動画API成功: {api}")  # 成功したAPIをログに出力
-                return res.text
-            else:
-                print(f"エラー: {api}")
-                video_apis.append(api)
-                video_apis.remove(api)
-        except:
-            print(f"タイムアウト: {api}")
-            video_apis.append(api)
-            video_apis.remove(api)
-    raise APItimeoutError("動画APIがタイムアウトしました")
+            res = requests.get(api + path, headers={'User-Agent': getRandomUserAgent()})
+            if res.status_code == 200:
+                data = res.json()
 
-def get_data(videoid):
-    global logs
-    try:
-        # 最初に既存の方法でデータを取得しようとする
-        t = json.loads(apirequest_video(r"api/v1/videos/" + urllib.parse.quote(videoid)))
-    except (APItimeoutError, json.JSONDecodeError) as e:
-        print(f"データ取得に失敗しました: {e}")
-        # 失敗したときには代替の方法を使用する
-        return getting_data(videoid)
+                # 動画の情報を抽出
+                related_videos = [
+                    {
+                        "id": i["videoId"],
+                        "title": i["title"],
+                        "authorId": i["authorId"],
+                        "author": i["author"],
+                        "viewCount": i["viewCount"]
+                    }
+                    for i in data.get("recommendedVideos", [])
+                ]
 
-    # 関連動画を解析してリストにする
-    related_videos = [
-        {
-            "id": i["videoId"],
-            "title": i["title"],
-            "authorId": i["authorId"],
-            "author": i["author"],
-            "viewCount": i["viewCount"]
-        }
-        for i in t["recommendedVideos"]
-    ]
+                return (
+                    related_videos,
+                    list(reversed([i["url"] for i in data.get("formatStreams", [])]))[:2],
+                    data.get("descriptionHtml", "").replace("\n", "<br>"),
+                    data.get("title", ""),
+                    data.get("authorId", ""),
+                    data.get("author", ""),
+                    data.get("authorThumbnails", [])[-1]["url"] if data.get("authorThumbnails") else "",
+                    data.get("viewCount", 0)
+                )
+        except requests.RequestException as e:
+            print(f"APIからのデータ取得中にエラーが発生しました: {e}")
 
-    return (
-        related_videos,  
-        list(reversed([i["url"] for i in t["formatStreams"]]))[:2],  
-        t["descriptionHtml"].replace("\n", "<br>"),  
-        t["title"],  
-        t["authorId"],  
-        t["author"],  
-        t["authorThumbnails"][-1]["url"],  
-        t["viewCount"]  
-    )
+    raise Exception("全ての代替URLからデータを取得できませんでした。")
 
 def getting_data(videoid):
     # ストリームURLと動画情報を取得するためのAPIのリスト
