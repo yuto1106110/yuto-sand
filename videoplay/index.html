@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <title>YouTube Downloader</title>
+</head>
+<body>
+    <h1>YouTube Downloader</h1>
+    <form id="download-form">
+        <input type="text" id="video-id" placeholder="動画IDを入力してください" required>
+        <button type="submit">ダウンロード</button>
+    </form>
+    <div id="result"></div>
+    <script>
+        document.getElementById('download-form').onsubmit = async function(event) {
+            event.preventDefault();
+            const videoId = document.getElementById('video-id').value;
+            const response = await fetch(`/api/fetch?video_id=${videoId}`);
+            const data = await response.json();
+            if (data.error) {
+                document.getElementById('result').textContent = data.error;
+            } else {
+                document.getElementById('result').innerHTML = `
+                    <p>タイトル: ${data.title}</p>
+                    <p>説明: ${data.description}</p>
+                    <p>視聴回数: ${data.view_count}</p>
+                    <p><a href="/player/${videoId}?video_id=${videoId}">ビデオを再生</a></p>
+                `;
+            }
+        };
+    </script>
+</body>
+</html>
