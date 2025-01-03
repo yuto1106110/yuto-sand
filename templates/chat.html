@@ -121,6 +121,53 @@
             font-size: 0.9em;
             color: #657786;
         }
+
+                .video-call-button {
+            background-color: #1da1f2; /* 青色 */
+            color: white;
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin: 10px 0;
+        }
+
+        .video-call-button:hover {
+            background-color: #0d8bdc; /* ホバー時の色 */
+        }
+
+        .video-call-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.85);
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+        }
+
+        .video-call-content {
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            text-align: center;
+        }
+
+        .close-video-call {
+            background-color: transparent;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: red;
+            margin-top: 10px;
+        }
+        
     </style>
     <script type="module">
         // Firebaseの初期化
@@ -981,6 +1028,21 @@
                 // ここにクッキーを拒否する処理を追加
             };
         });
+
+                document.getElementById('videoCallButton').onclick = () => {
+            const overlay = document.getElementById('videoCallOverlay');
+            overlay.style.display = 'flex'; // オーバーレイを表示
+        };
+
+        document.querySelector('.close-video-call').onclick = () => {
+            const overlay = document.getElementById('videoCallOverlay');
+            overlay.style.display = 'none'; // オーバーレイを非表示
+        };
+
+        document.getElementById('videoCallButton').onclick = () => {
+    window.open("https://bellbird.dmm.com/app/meeting/830gTMnaEe-Rc2OB9RBc4g", "_blank"); 
+};
+
     </script>
 </head>
 
@@ -998,11 +1060,13 @@
     <button id="followButton">proxy_minotaurをフォロー</button>
     <button id="aboutBlankButton">about:blankを開く</button>
     <button id="proxyButton">プロキシを起動</button>
+    <button id="videoCallButton" class="video-call-button">ビデオ通話を始める</button>
 
     <div class="blog-section">
         <h2>ブログセクション</h2>
         <p>チャットシステムと独自のAPIを利用した最強のinviインスタンスの融合型、それがこのサイトです！！　YUKI:50個のinviインスタンスから動画を取得、デザインの改善　chat:FirebaseAPIを使用。リアルタイムで世界中の人と話せる　　　公式スタジオhttps://scratch.mit.edu/studios/35947626/</p>
         <p>チャットのルールです新規の方はお読みください　https://scratch.mit.edu/projects/1100489494/</p>
+        <p>ビデオ通話の際は個人情報などを共有しないようにご注意ください。</p>
         <div class="comments">
             <textarea id="commentInput" placeholder="コメントを入力" rows="4"></textarea>
             <button id="submitComment">コメントを送信</button>
@@ -1016,6 +1080,14 @@
         </div>
     </div>
 
+       <div class="video-call-overlay" id="videoCallOverlay">
+        <div class="video-call-content">
+            <h3>ビデオ通話を開始</h3>
+            <iframe src="https://bellbird.dmm.com/app/meeting/830gTMnaEe-Rc2OB9RBc4g" width="400" height="300" frameborder="0" allowfullscreen></iframe>
+            <button class="close-video-call">✖ 閉じる</button>
+        </div>
+    </div>
+    
     <!-- Cookieの承認 -->
     <div id="cookie-notice" class="cookie-notice">
         最新のYUKIインスタンスにとぶ。<br>
