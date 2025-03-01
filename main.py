@@ -157,7 +157,7 @@ r"https://cal11.iv.ggttyler.dev/,
 r"https://api.invidious.io/,
 r"https://invidious.io/,
 r"https://redirect.invidious.io/,
-r"https://yewtu.be/
+r"https://yewtu.be/,
 ]
 url = requests.get(r'https://raw.githubusercontent.com/mochidukiyukimi/yuki-youtube-instance/main/instance.txt').text.rstrip()
 version = "1.0"
