@@ -1,4 +1,4 @@
-[code] document.getElementById('accept-btn').addEventListener('click', function() {
+document.getElementById('accept-btn').addEventListener('click', function() {
     document.cookie = "yuki=True; max-age=31536000; path=/";
     location.href = "/";
     return;
@@ -29,4 +29,4 @@ function hideCookieNotice() {
     setTimeout(() => {
         cookieNotice.style.display = 'none';
     }, 500);
-}[/code]
+}
